@@ -1,4 +1,4 @@
-package org.kobjects.htmllayout;
+package org.kobjects.htmlview2;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,12 +1,9 @@
-package org.kobjects.htmllayout;
+package org.kobjects.htmlview2;
 
 import android.view.View;
-import android.view.ViewGroup;
 
-import org.kobjects.css.Css;
 import org.kobjects.css.CssProperty;
 import org.kobjects.css.CssEnum;
-import org.kobjects.css.CssUnit;
 
 public class BlockLayoutManager implements LayoutManager {
 

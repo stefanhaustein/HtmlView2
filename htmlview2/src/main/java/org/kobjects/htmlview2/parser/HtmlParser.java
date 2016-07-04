@@ -1,4 +1,4 @@
-package org.kobjects.htmllayout.parser;
+package org.kobjects.htmlview2.parser;
 
 import android.util.Log;
 

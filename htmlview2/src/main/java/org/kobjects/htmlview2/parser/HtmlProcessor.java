@@ -1,4 +1,4 @@
-package org.kobjects.htmllayout.parser;
+package org.kobjects.htmlview2.parser;
 
 import android.util.Log;
 import android.view.View;
@@ -11,11 +11,11 @@ import android.widget.TextView;
 
 
 import org.kobjects.css.CssStyleSheet;
-import org.kobjects.htmllayout.PageContext;
-import org.kobjects.htmllayout.HtmlElement;
-import org.kobjects.htmllayout.HtmlLayout;
-import org.kobjects.htmllayout.HtmlTextView;
-import org.kobjects.htmllayout.NonViewElement;
+import org.kobjects.htmlview2.PageContext;
+import org.kobjects.htmlview2.HtmlElement;
+import org.kobjects.htmlview2.HtmlLayout;
+import org.kobjects.htmlview2.HtmlTextView;
+import org.kobjects.htmlview2.NonViewElement;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 

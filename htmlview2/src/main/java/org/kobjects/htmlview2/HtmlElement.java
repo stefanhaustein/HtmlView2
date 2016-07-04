@@ -1,4 +1,4 @@
-package org.kobjects.htmllayout;
+package org.kobjects.htmlview2;
 
 import org.kobjects.css.CssStylableElement;
 

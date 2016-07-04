@@ -1,20 +1,18 @@
-package org.kobjects.htmllayout.demo;
+package org.kobjects.htmlview2.demo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ScrollView;
 
-import org.kobjects.htmllayout.DefaultRequestHandler;
-import org.kobjects.htmllayout.PageContext;
-import org.kobjects.htmllayout.HtmlLayout;
-import org.kobjects.htmllayout.parser.HtmlProcessor;
+import org.kobjects.htmlview2.DefaultRequestHandler;
+import org.kobjects.htmlview2.PageContext;
+import org.kobjects.htmlview2.HtmlLayout;
+import org.kobjects.htmlview2.parser.HtmlProcessor;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 public class MainActivity extends AppCompatActivity {
 
