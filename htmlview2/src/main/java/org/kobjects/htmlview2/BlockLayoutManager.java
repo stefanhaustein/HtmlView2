@@ -4,6 +4,7 @@ import android.view.View;
 
 import org.kobjects.css.CssProperty;
 import org.kobjects.css.CssEnum;
+import org.kobjects.css.CssStyle;
 
 public class BlockLayoutManager implements LayoutManager {
 
@@ -12,7 +13,7 @@ public class BlockLayoutManager implements LayoutManager {
       return;
     }
     HtmlLayout.LayoutParams params = (HtmlLayout.LayoutParams) htmlLayout.getLayoutParams();
-    CssEnum align = params.style.getEnum(CssProperty.TEXT_ALIGN);
+    CssEnum align = params.style().getEnum(CssProperty.TEXT_ALIGN);
     int addOffset = 0;
     if (align == CssEnum.RIGHT) {
       addOffset = availableSpace - usedSpace;
@@ -36,7 +37,8 @@ public class BlockLayoutManager implements LayoutManager {
 
     if (width == 0) {
       // TODO: Is that true even for absolute positioning?
-      throw new RuntimeException("HTML layout requires a maximum width.");
+      // throw new RuntimeException("HTML layout requires a maximum width.");
+      width = Integer.MAX_VALUE;
     }
     int currentX = 0;
     int currentY = 0;
@@ -52,6 +54,7 @@ public class BlockLayoutManager implements LayoutManager {
 
       View child = htmlLayout.getChildAt(i);
       HtmlLayout.LayoutParams childParams = (HtmlLayout.LayoutParams) child.getLayoutParams();
+      CssStyle childStyle = childParams.style();
 
       int childLeft = childParams.getMarginLeft() + childParams.getBorderLeft() + childParams.getPaddingLeft();
       int childRight = childParams.getMarginRight() + childParams.getBorderRight() + childParams.getPaddingRight();
@@ -62,7 +65,7 @@ public class BlockLayoutManager implements LayoutManager {
       int measuredX;
       int measuredY;
 
-      if (childParams.style.isBlock() ||
+      if (childStyle.isBlock() ||
           (child instanceof HtmlTextView && ((HtmlTextView) child).hasLineBreaks)) {
         if (currentX > 0) {
           adjustLastLine(htmlLayout, firstChildIndex, i, currentX, width);
@@ -72,11 +75,11 @@ public class BlockLayoutManager implements LayoutManager {
         }
         currentY += Math.max(pendingMargin, childParams.getMarginTop());
 
-        if (childParams.style.isSet(CssProperty.WIDTH)) {
+        if (childStyle.isSet(CssProperty.WIDTH)) {
           child.measure(View.MeasureSpec.EXACTLY | childParams.getScaledWidth(CssProperty.WIDTH),
               View.MeasureSpec.UNSPECIFIED);
         } else {
-          if (childParams.style.isSet(CssProperty.MAX_WIDTH)) {
+          if (childStyle.isSet(CssProperty.MAX_WIDTH)) {
             maxChildContentWidth = Math.min(maxChildContentWidth, childParams.getScaledWidth(CssProperty.MAX_WIDTH));
           }
           child.measure(widthMode | maxChildContentWidth, View.MeasureSpec.UNSPECIFIED);
@@ -107,7 +110,7 @@ public class BlockLayoutManager implements LayoutManager {
         currentX += childWidth;
       }
 
-      if (childParams.style.getEnum(CssProperty.POSITION) == CssEnum.RELATIVE) {
+      if (childStyle.getEnum(CssProperty.POSITION) == CssEnum.RELATIVE) {
         measuredX += childParams.getScaledWidth(CssProperty.LEFT)
             - childParams.getScaledWidth(CssProperty.RIGHT);
         measuredY += childParams.getScaledWidth(CssProperty.TOP)

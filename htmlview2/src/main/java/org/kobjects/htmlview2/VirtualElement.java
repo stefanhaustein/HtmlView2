@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-public class NonViewElement implements HtmlElement {
+public class VirtualElement implements HtmlElement {
   private final String name;
   ArrayList<HtmlElement> children = new ArrayList<>();
   LinkedHashMap<String,String> attributes = new LinkedHashMap<>();
   CssStyle style;
 
-  public NonViewElement(String name) {
+  public VirtualElement(String name) {
     this.name = name;
   }
 

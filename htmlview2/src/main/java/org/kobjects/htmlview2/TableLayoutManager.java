@@ -67,8 +67,8 @@ public class TableLayoutManager implements LayoutManager {
           columnIndex++;
         }
         cell.measure(View.MeasureSpec.AT_MOST | width, View.MeasureSpec.UNSPECIFIED);
-        int colSpan = getColSpan(cellParams);
-        int rowSpan = getRowSpan(cellParams);
+        int colSpan = getColSpan(cellParams.element);
+        int rowSpan = getRowSpan(cellParams.element);
         int cellWidth = cell.getMeasuredWidth() + cellParams.getBorderLeft() + cellParams.getPaddingLeft()
             + cellParams.getPaddingRight() + cellParams.getBorderRight();
 
@@ -145,6 +145,7 @@ public class TableLayoutManager implements LayoutManager {
       int currentX = 0;
       for (View cell: row) {
         HtmlLayout.LayoutParams cellParams = (HtmlLayout.LayoutParams) cell.getLayoutParams();
+        VirtualElement cellElement = cellParams.element;
         ColumnData columnData;
         while (true) {
           // Skip columns with remaining rowspan
@@ -162,7 +163,7 @@ public class TableLayoutManager implements LayoutManager {
         int bottomOffset = cellParams.getBorderBottom() + cellParams.getPaddingBottom();
         int leftOffset = cellParams.getBorderLeft() + cellParams.getPaddingLeft();
         int rightOffset = cellParams.getBorderRight() + cellParams.getPaddingRight();
-        int colSpan = getColSpan(cellParams);
+        int colSpan = getColSpan(cellElement);
         int spanWidth = 0;
         for (int i = columnIndex; i < columnIndex + colSpan; i++) {
           spanWidth += columnList.get(i).maxMeasuredWidth;
@@ -172,7 +173,7 @@ public class TableLayoutManager implements LayoutManager {
         }
         cell.measure(View.MeasureSpec.EXACTLY | (spanWidth - leftOffset - rightOffset), View.MeasureSpec.UNSPECIFIED);
         cellParams.setMeasuredPosition(currentX + leftOffset, currentY + topOffset);
-        columnData.remainingRowSpan = getRowSpan(cellParams);
+        columnData.remainingRowSpan = getRowSpan(cellElement);
         columnData.remainingHeight = topOffset + cell.getMeasuredHeight() + bottomOffset;
         columnData.startCell = cell;
         columnData.yOffset = currentY + topOffset + bottomOffset;
@@ -201,25 +202,24 @@ public class TableLayoutManager implements LayoutManager {
 
   List<List<View>> collectRows(HtmlLayout htmlLayout) {
     ArrayList<List<View>> rows = new ArrayList<>();
-    if (!(htmlLayout.getLayoutParams() instanceof HtmlElement)) {
+    if (!(htmlLayout.getLayoutParams() instanceof HtmlLayout.LayoutParams)) {
       return rows;
     }
 
     Iterator<? extends CssStylableElement> rowIterator =
-        ((HtmlElement) htmlLayout.getLayoutParams()).getChildElementIterator();
+        ((HtmlLayout.LayoutParams) htmlLayout.getLayoutParams()).element.getChildElementIterator();
 
     while (rowIterator.hasNext()) {
       CssStylableElement potentialRowElement = rowIterator.next();
-      if (potentialRowElement instanceof NonViewElement) {
-        NonViewElement row = (NonViewElement) potentialRowElement;
+      if (potentialRowElement instanceof VirtualElement) {
+        VirtualElement row = (VirtualElement) potentialRowElement;
         ArrayList<View> cells = new ArrayList<View>();
         rows.add(cells);
         Iterator<? extends CssStylableElement> colIterator = row.getChildElementIterator();
         while (colIterator.hasNext()) {
           CssStylableElement potentialCell = colIterator.next();
-          if (potentialCell instanceof HtmlLayout.LayoutParams) {
-            HtmlLayout.LayoutParams cellParams = ((HtmlLayout.LayoutParams) potentialCell);
-            cells.add(cellParams.getView());
+          if (potentialCell instanceof ViewElement) {
+            cells.add(((ViewElement) potentialCell).view);
           }
         }
       }

@@ -11,11 +11,7 @@ import android.widget.TextView;
 
 
 import org.kobjects.css.CssStyleSheet;
-import org.kobjects.htmlview2.PageContext;
-import org.kobjects.htmlview2.HtmlElement;
-import org.kobjects.htmlview2.HtmlLayout;
-import org.kobjects.htmlview2.HtmlTextView;
-import org.kobjects.htmlview2.NonViewElement;
+import org.kobjects.htmlview2.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -50,7 +46,7 @@ public class HtmlProcessor {
       parseContainerContent(html, null);
       CssStyleSheet styleSheet = pageContext.getStyleSheet();
       for (int i = 0; i < html.getChildCount(); i++) {
-        styleSheet.apply((HtmlLayout.LayoutParams) html.getChildAt(i).getLayoutParams(), null);
+        styleSheet.apply(((HtmlLayout.LayoutParams) html.getChildAt(i).getLayoutParams()).element, null);
       }
       return html;
 
@@ -187,7 +183,7 @@ public class HtmlProcessor {
     parser.next();
   }
 
-  private void parseContainerContent(HtmlLayout physicalContainer, HtmlElement logicalContainer) throws IOException, XmlPullParserException {
+  private void parseContainerContent(HtmlLayout physicalContainer, VirtualElement logicalContainer) throws IOException, XmlPullParserException {
     HtmlTextView pendingText = null;
     // System.out.println("parseContainerContent " + name);
     ArrayList<HtmlTextView.TextElement> textElementStack = null;
@@ -196,7 +192,7 @@ public class HtmlProcessor {
       switch (parser.getEventType()) {
         case XmlPullParser.START_TAG: {
           String childName = parser.getName();
-          if (childName.equals("html") || childName.equals("head")) {
+          if (childName.equals("html")) { // || childName.equals("head")) {
             parser.next();
             parseContainerContent(physicalContainer, logicalContainer);
             parser.next();
@@ -215,7 +211,7 @@ public class HtmlProcessor {
             parser.next();
             parseTextContent();
             parser.next();
-          } else if (childName.equals("script")) {
+          } else if (childName.equals("script") || childName.equals("title")) {
             parser.next();
             parseTextContent();
             parser.next();
@@ -225,7 +221,7 @@ public class HtmlProcessor {
             pageContext.getStyleSheet().read(styleText, pageContext.getBaseUri(), null, null, null);
             parser.next();
           } else if (parser.elementProperty(HtmlParser.ElementProperty.LOGICAL)) {
-            NonViewElement logicalChild = new NonViewElement(parser.getName());
+            VirtualElement logicalChild = new VirtualElement(parser.getName());
             logicalContainer.add(logicalChild);
             parser.next();
             parseContainerContent(physicalContainer, logicalChild);
@@ -243,17 +239,17 @@ public class HtmlProcessor {
             pendingText = null;
             View child = createView();
             physicalContainer.addView(child);
-            HtmlLayout.LayoutParams params = (HtmlLayout.LayoutParams) child.getLayoutParams();
-            params.elementName = parser.getName();
+            ViewElement viewElement = new ViewElement(parser.getName(), child);
             for (int i = 0; i < parser.getAttributeCount(); i++) {
-              params.attributes.put(parser.getAttributeName(i), parser.getAttributeValue(i));
+              viewElement.setAttribute(parser.getAttributeName(i), parser.getAttributeValue(i));
             }
+            ((HtmlLayout.LayoutParams) child.getLayoutParams()).element = viewElement;
             if (logicalContainer != null) {
-              logicalContainer.add(params);
+              logicalContainer.add(viewElement);
             }
             parser.next();
             if (child instanceof HtmlLayout) {
-              parseContainerContent((HtmlLayout) child, params);
+              parseContainerContent((HtmlLayout) child, viewElement);
             } else if ("select".equals(childName)) {
               parseSelectContent((Spinner) child);
             } else {

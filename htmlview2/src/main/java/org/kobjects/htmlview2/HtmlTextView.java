@@ -120,7 +120,7 @@ public class HtmlTextView extends TextView {
   }
 
 
-  public class TextElement extends NonViewElement implements ImageTarget {
+  public class TextElement extends VirtualElement implements ImageTarget {
     int start = content.length();
     int end;
     TextElement parent;
@@ -169,7 +169,7 @@ public class HtmlTextView extends TextView {
     public void setComputedStyle(CssStyle style) {
       // System.out.println("applyStyle to '" + content.toString().substring(start, end) + "': " + style);
       this.style = style;
-      CssStyle parentStyle = parent == null ? ((HtmlLayout.LayoutParams) getLayoutParams()).style : parent.style;
+      CssStyle parentStyle = parent == null ? ((HtmlLayout.LayoutParams) getLayoutParams()).style() : parent.style;
       for (Object span : spans) {
         content.removeSpan(span);
       }

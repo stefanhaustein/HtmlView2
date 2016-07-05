@@ -52,7 +52,7 @@ public class HtmlLayout extends ViewGroup {
 
     Bitmap img = layoutParams.getBackgroundBitmap();
     if (img != null) {
-      CssStyle style = layoutParams.style;
+      CssStyle style = layoutParams.style();
       Rect clipBounds = new Rect();
       canvas.getClipBounds(clipBounds);
       canvas.save();
@@ -95,7 +95,7 @@ public class HtmlLayout extends ViewGroup {
       return;
     }
     LayoutParams childParams = (LayoutParams) getChildAt(index).getLayoutParams();
-    CssStyle style = childParams.style;
+    CssStyle style = childParams.style();
 
     int x0 = child.getLeft() - childParams.getPaddingLeft();
     int y0 = child.getTop() - childParams.getPaddingTop();
@@ -175,7 +175,7 @@ public class HtmlLayout extends ViewGroup {
 
   CssStyle getStyle() {
     ViewGroup.LayoutParams params = getLayoutParams();
-    return (params instanceof LayoutParams) ? ((LayoutParams) params).style : EMTPY_STYLE;
+    return (params instanceof LayoutParams) ? ((LayoutParams) params).style() : EMTPY_STYLE;
   }
 
 
@@ -185,7 +185,7 @@ public class HtmlLayout extends ViewGroup {
     int listIndex = 1;
     for (int i = 0; i < getChildCount(); i++) {
       drawChildDecoration(canvas, i);
-      CssStyle childStyle = getChildLayoutParams(i).style;
+      CssStyle childStyle = getChildLayoutParams(i).style();
       if (childStyle.getEnum(CssProperty.DISPLAY) == CssEnum.LIST_ITEM &&
           listStyleType != CssEnum.NONE) {
         String bullet;
@@ -244,8 +244,9 @@ public class HtmlLayout extends ViewGroup {
     int dy = 0;
     for (int i = 0; i < getChildCount(); i++) {
       LayoutParams childParams = getChildLayoutParams(i);
-      if (!childParams.style.isBlock() ||
-          childParams.style.getEnum(CssProperty.POSITION) != CssEnum.ABSOLUTE) {
+      CssStyle childStyle = childParams.style();
+      if (!childStyle.isBlock() ||
+          childStyle.getEnum(CssProperty.POSITION) != CssEnum.ABSOLUTE) {
         continue;
       }
       if (container == null) {
@@ -269,6 +270,7 @@ public class HtmlLayout extends ViewGroup {
   void onMeasureAbsolute(HtmlLayout container, int i, int dx, int dy) {
     View child = getChildAt(i);
     HtmlLayout.LayoutParams childParams = (HtmlLayout.LayoutParams) child.getLayoutParams();
+    CssStyle childStyle = childParams.style();
 
     int containerWidth = Math.round(container.cssContentWidth * pageContext.scale);
 
@@ -278,28 +280,28 @@ public class HtmlLayout extends ViewGroup {
     int childBottom = childParams.getBorderBottom() + childParams.getPaddingBottom();
     int maxChildContentWidth = Math.max(Math.round(containerWidth) - childLeft - childRight, 0);
 
-    if (childParams.style.isSet(CssProperty.WIDTH)) {
+    if (childStyle.isSet(CssProperty.WIDTH)) {
       child.measure(View.MeasureSpec.EXACTLY | childParams.getScaledWidth(CssProperty.WIDTH),
           View.MeasureSpec.UNSPECIFIED);
     } else {
-      if (childParams.style.isSet(CssProperty.MAX_WIDTH)) {
+      if (childStyle.isSet(CssProperty.MAX_WIDTH)) {
         maxChildContentWidth = Math.min(maxChildContentWidth, childParams.getScaledWidth(CssProperty.MAX_WIDTH));
       }
       child.measure(MeasureSpec.AT_MOST | maxChildContentWidth, View.MeasureSpec.UNSPECIFIED);
     }
 
     int measuredX;
-    if (childParams.style.isSet(CssProperty.LEFT)) {
-      measuredX = childLeft + Math.round(pageContext.scale * childParams.style.get(CssProperty.LEFT, CssUnit.PX, container.cssContentWidth));
-    } else if (childParams.style.isSet(CssProperty.RIGHT)) {
-      measuredX = containerWidth - child.getMeasuredWidth() - childRight - Math.round(pageContext.scale * (childParams.style.get(CssProperty.RIGHT, CssUnit.PX, container.cssContentWidth)));
+    if (childStyle.isSet(CssProperty.LEFT)) {
+      measuredX = childLeft + Math.round(pageContext.scale * childStyle.get(CssProperty.LEFT, CssUnit.PX, container.cssContentWidth));
+    } else if (childStyle.isSet(CssProperty.RIGHT)) {
+      measuredX = containerWidth - child.getMeasuredWidth() - childRight - Math.round(pageContext.scale * (childStyle.get(CssProperty.RIGHT, CssUnit.PX, container.cssContentWidth)));
     } else {
       measuredX = childLeft;
     }
 
     int measuredY;
-    if (childParams.style.isSet(CssProperty.TOP)) {
-      measuredY = childTop + Math.round(pageContext.scale * childParams.style.get(CssProperty.TOP, CssUnit.PX, container.cssContentWidth));
+    if (childStyle.isSet(CssProperty.TOP)) {
+      measuredY = childTop + Math.round(pageContext.scale * childStyle.get(CssProperty.TOP, CssUnit.PX, container.cssContentWidth));
   //  } else if (childParams.style.isSet(CssProperty.BOTTOM)) {
       // TODO
       // measuredY = container.getMeasuredHeight() - child.getMeasuredHeight() - childBottom - Math.round(htmlContext.scale * (childParams.style.get(CssProperty.BOTTOM, CssUnit.PX, container.cssContentWidth)));
@@ -319,20 +321,23 @@ public class HtmlLayout extends ViewGroup {
   }
 
   public boolean isRegularLayout(int i) {
-    CssStyle style =getChildLayoutParams(i).style;
+    CssStyle style = getChildLayoutParams(i).style();
     return style.getEnum(CssProperty.DISPLAY) != CssEnum.NONE &&
         (!style.isBlock() || style.getEnum(CssProperty.POSITION) != CssEnum.ABSOLUTE);
   }
 
-  public class LayoutParams extends ViewGroup.LayoutParams implements HtmlElement {
+  public class LayoutParams extends ViewGroup.LayoutParams {
     int measuredX;
     int measuredY;
-    public String elementName;
-    public Map<String, String> attributes = new LinkedHashMap<>();
-    View viewCache;  // The view governed by these LayoutParams
-    ArrayList<CssStylableElement> children = new ArrayList<>();
 
-    public CssStyle style = new CssStyle();
+    // null for HtmlTextView
+    public ViewElement element;
+
+    public CssStyle style() {
+      return element != null ? element.style : EMTPY_STYLE;
+    }
+
+   // public CssStyle style = new CssStyle();
     private Paint backgroundCache;
 
     public LayoutParams() {
@@ -340,23 +345,23 @@ public class HtmlLayout extends ViewGroup {
     }
 
     public int getScaledWidth(CssProperty property) {
-      return Math.round(style.get(property, CssUnit.PX, cssContentWidth) * pageContext.scale);
+      return Math.round(style().get(property, CssUnit.PX, cssContentWidth) * pageContext.scale);
     }
 
     public int getBorderTop() {
-      return style.getEnum(CssProperty.BORDER_TOP_STYLE) == CssEnum.NONE
+      return style().getEnum(CssProperty.BORDER_TOP_STYLE) == CssEnum.NONE
           ? 0 : getScaledWidth(CssProperty.BORDER_TOP_WIDTH);
     }
     public int getBorderRight() {
-      return style.getEnum(CssProperty.BORDER_RIGHT_STYLE) == CssEnum.NONE
+      return style().getEnum(CssProperty.BORDER_RIGHT_STYLE) == CssEnum.NONE
           ? 0 : getScaledWidth(CssProperty.BORDER_RIGHT_WIDTH);
     }
     public int getBorderBottom() {
-      return style.getEnum(CssProperty.BORDER_BOTTOM_STYLE) == CssEnum.NONE
+      return style().getEnum(CssProperty.BORDER_BOTTOM_STYLE) == CssEnum.NONE
           ? 0 : getScaledWidth(CssProperty.BORDER_BOTTOM_WIDTH);
     }
     public int getBorderLeft() {
-      return style.getEnum(CssProperty.BORDER_LEFT_STYLE) == CssEnum.NONE
+      return style().getEnum(CssProperty.BORDER_LEFT_STYLE) == CssEnum.NONE
           ? 0 : getScaledWidth(CssProperty.BORDER_LEFT_WIDTH);
     }
 
@@ -376,11 +381,11 @@ public class HtmlLayout extends ViewGroup {
     }
 
     public int computeMargin(CssProperty marginToCompute, CssProperty oppositeMargin) {
-      if (style.getEnum(CssProperty.DISPLAY) != CssEnum.BLOCK) {
+      if (style().getEnum(CssProperty.DISPLAY) != CssEnum.BLOCK) {
         return 0;
       }
       int margin = getScaledWidth(marginToCompute);
-      if (!style.isLengthFixedOrPercent(CssProperty.WIDTH)) {
+      if (!style().isLengthFixedOrPercent(CssProperty.WIDTH)) {
         return margin;
       }
 
@@ -388,8 +393,8 @@ public class HtmlLayout extends ViewGroup {
           - getScaledWidth(CssProperty.WIDTH) - getPaddingLeft() - getPaddingRight()
           - getBorderLeft() - getBorderRight();
 
-      if (style.getEnum(marginToCompute) == CssEnum.AUTO) {
-        if (style.getEnum(oppositeMargin) == CssEnum.AUTO) {
+      if (style().getEnum(marginToCompute) == CssEnum.AUTO) {
+        if (style().getEnum(oppositeMargin) == CssEnum.AUTO) {
           margin = availableWidthForMargins / 2;
         } else {
           margin = availableWidthForMargins - getScaledWidth(oppositeMargin);
@@ -418,59 +423,13 @@ public class HtmlLayout extends ViewGroup {
       measuredY = y;
     }
 
-    @Override
-    public String getAttributeValue(String name) {
-      return attributes == null ? null : attributes.get(name);
-    }
-
-    @Override
-    public String getName() {
-      return elementName;
-    }
-
-    View getView() {
-      if (viewCache == null) {
-        for (int i = 0; i < getChildCount(); i++) {
-          View child = getChildAt(i);
-          if (child.getLayoutParams() == this) {
-            viewCache = child;
-            break;
-          }
-        }
-      }
-      return viewCache;
-    }
-
-    @Override
-    public Iterator<? extends CssStylableElement> getChildElementIterator() {
-      return children.iterator();
-    }
-
-    @Override
-    public void setAttribute(String name, String value) {
-      attributes.put(name, value);
-    }
-
-    @Override
-    public void setComputedStyle(CssStyle style) {
-      this.style = style;
-      if (getView() instanceof HtmlLayout) {
-        HtmlLayout htmlLayout = (HtmlLayout) getView();
-        for (int i = 0; i < htmlLayout.getChildCount(); i++) {
-          if (htmlLayout.getChildAt(i) instanceof HtmlTextView) {
-            ((HtmlTextView) htmlLayout.getChildAt(i)).setComputedStyle(style);
-          }
-        }
-      }
-    }
-
 
     /**
      * Returns background paint object for given element.
      */
     public Paint getBackgroundPaint() {
       if (backgroundCache == null) {
-        int color = style.getColor(CssProperty.BACKGROUND_COLOR);
+        int color = style().getColor(CssProperty.BACKGROUND_COLOR);
         if ((color & 0x0ff000000) != 0) {
           backgroundCache = new Paint();
           backgroundCache.setStyle(android.graphics.Paint.Style.FILL);
@@ -484,8 +443,8 @@ public class HtmlLayout extends ViewGroup {
       Bitmap img = null;
 
 
-      if (style.isSet(CssProperty.BACKGROUND_IMAGE)) {
-        String backgroundImage = style.getString(CssProperty.BACKGROUND_IMAGE);
+      if (style().isSet(CssProperty.BACKGROUND_IMAGE)) {
+        String backgroundImage = style().getString(CssProperty.BACKGROUND_IMAGE);
         Uri backgroundImageUri = Uri.parse(backgroundImage);
 /*
         if (ImageUtil.isDataUri(backgroundImageUri)) {
@@ -530,7 +489,7 @@ public class HtmlLayout extends ViewGroup {
         borderWidth = getBorderTop() + getBorderBottom();
       }
 
-      int backgroundOffset = borderOffset + style.getBackgroundReferencePoint(
+      int backgroundOffset = borderOffset + style().getBackgroundReferencePoint(
           cssPositionProperty, containerSize - borderWidth, imageSize);
 
       if (cssRepeatPropertyValue == cssRepeatDirection
@@ -542,10 +501,6 @@ public class HtmlLayout extends ViewGroup {
       return backgroundOffset;
     }
 
-    @Override
-    public void add(HtmlElement element) {
-      children.add(element);
-    }
   }
 
 }
