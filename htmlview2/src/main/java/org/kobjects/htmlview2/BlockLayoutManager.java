@@ -8,11 +8,11 @@ import org.kobjects.css.CssStyle;
 
 public class BlockLayoutManager implements LayoutManager {
 
-  void adjustLastLine(HtmlLayout htmlLayout, int firstChildIndex, int to, int usedSpace, int availableSpace) {
-    if (!(htmlLayout.getLayoutParams() instanceof HtmlLayout.LayoutParams)) {
+  void adjustLastLine(HtmlViewGroup htmlLayout, int firstChildIndex, int to, int usedSpace, int availableSpace) {
+    if (!(htmlLayout.getLayoutParams() instanceof HtmlViewGroup.LayoutParams)) {
       return;
     }
-    HtmlLayout.LayoutParams params = (HtmlLayout.LayoutParams) htmlLayout.getLayoutParams();
+    HtmlViewGroup.LayoutParams params = (HtmlViewGroup.LayoutParams) htmlLayout.getLayoutParams();
     CssEnum align = params.style().getEnum(CssProperty.TEXT_ALIGN);
     int addOffset = 0;
     if (align == CssEnum.RIGHT) {
@@ -29,7 +29,7 @@ public class BlockLayoutManager implements LayoutManager {
   }
 
   @Override
-  public void onMeasure(HtmlLayout htmlLayout, int widthMeasureSpec, int heightMeasureSpec) {
+  public void onMeasure(HtmlViewGroup htmlLayout, int widthMeasureSpec, int heightMeasureSpec) {
     int width = View.MeasureSpec.getSize(widthMeasureSpec);
     int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
     int height = View.MeasureSpec.getSize(heightMeasureSpec);
@@ -53,7 +53,7 @@ public class BlockLayoutManager implements LayoutManager {
       }
 
       View child = htmlLayout.getChildAt(i);
-      HtmlLayout.LayoutParams childParams = (HtmlLayout.LayoutParams) child.getLayoutParams();
+      HtmlViewGroup.LayoutParams childParams = (HtmlViewGroup.LayoutParams) child.getLayoutParams();
       CssStyle childStyle = childParams.style();
 
       int childLeft = childParams.getMarginLeft() + childParams.getBorderLeft() + childParams.getPaddingLeft();

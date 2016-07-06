@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import elemental.dom.Element;
 import org.kobjects.css.CssEnum;
 import org.kobjects.css.CssProperty;
 import org.kobjects.css.CssStyle;
@@ -34,13 +35,13 @@ public class HtmlTextView extends TextView {
 
   CssStyle style;
   SpannableStringBuilder content = new SpannableStringBuilder("");
-  PageContext pageContext;
+  HtmlView pageContext;
   ArrayList<TextElement> images;
   boolean hasLineBreaks = false;
   int pendingBreakPosition = -1;
 
-  public HtmlTextView(PageContext pageContext) {
-    super(pageContext.context);
+  public HtmlTextView(HtmlView pageContext) {
+    super(pageContext.getContext());
    // this.setSingleLine(false);
     this.pageContext = pageContext;
   }
@@ -55,9 +56,9 @@ public class HtmlTextView extends TextView {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
   }
 
-  public TextElement addElement(HtmlElement logicalContainer, String name) {
+  public TextElement addElement(Element logicalContainer, String name) {
     TextElement element = new TextElement(name);
-    logicalContainer.add(element);
+    logicalContainer.appendChild(element);
     return element;
   }
 
@@ -104,8 +105,8 @@ public class HtmlTextView extends TextView {
     float scale = pageContext.scale;
     setTextSize(TypedValue.COMPLEX_UNIT_PX, style.get(CssProperty.FONT_SIZE, CssUnit.PX) * scale);
     setTextColor(style.getColor(CssProperty.COLOR));
-    setTypeface(PageContext.getTypeface(style), PageContext.getTextStyle(style));
-    setPaintFlags((getPaintFlags() & PageContext.PAINT_MASK) | PageContext.getPaintFlags(style));
+    setTypeface(CssStyles.getTypeface(style), CssStyles.getTextStyle(style));
+    setPaintFlags((getPaintFlags() & HtmlView.PAINT_MASK) | CssStyles.getPaintFlags(style));
     switch (style.getEnum(CssProperty.TEXT_ALIGN)) {
       case RIGHT:
         setGravity(Gravity.RIGHT);
@@ -149,7 +150,7 @@ public class HtmlTextView extends TextView {
     public void end() {
       if (getName().equals("img")) {
         appendNormalized("\u2327");
-        String src = getAttributeValue("src");
+        String src = getAttribute("src");
         if (src != null) {
           try {
             pageContext.requestHandler.requestImage(this, pageContext.createUri(src));
@@ -169,7 +170,7 @@ public class HtmlTextView extends TextView {
     public void setComputedStyle(CssStyle style) {
       // System.out.println("applyStyle to '" + content.toString().substring(start, end) + "': " + style);
       this.style = style;
-      CssStyle parentStyle = parent == null ? ((HtmlLayout.LayoutParams) getLayoutParams()).style() : parent.style;
+      CssStyle parentStyle = parent == null ? ((HtmlViewGroup.LayoutParams) getLayoutParams()).style() : parent.style;
       for (Object span : spans) {
         content.removeSpan(span);
       }
@@ -178,7 +179,7 @@ public class HtmlTextView extends TextView {
         Bitmap bitmap = drawable.getBitmap();
         float imageWidth = bitmap.getWidth();
         float imageHeight = bitmap.getHeight();
-        int cssContentWidth = ((HtmlLayout) getParent()).cssContentWidth;
+        int cssContentWidth = ((HtmlViewGroup) getParent()).cssContentWidth;
         if (style.isSet(CssProperty.WIDTH)) {
           imageWidth = style.get(CssProperty.WIDTH, CssUnit.PX, cssContentWidth);
           if (style.isSet((CssProperty.HEIGHT))) {
@@ -195,12 +196,12 @@ public class HtmlTextView extends TextView {
 
         spans.add(new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE));
       }
-      int typefaceFlags = PageContext.getTextStyle(style);
-      if (typefaceFlags != PageContext.getTextStyle(parentStyle)) {
+      int typefaceFlags = CssStyles.getTextStyle(style);
+      if (typefaceFlags != CssStyles.getTextStyle(parentStyle)) {
         spans.add(new StyleSpan(typefaceFlags));
       }
-      String typefaceName = PageContext.getFontFamilyName(style);
-      if (!typefaceName.equals(PageContext.getFontFamilyName(parentStyle))) {
+      String typefaceName = CssStyles.getFontFamilyName(style);
+      if (!typefaceName.equals(CssStyles.getFontFamilyName(parentStyle))) {
         spans.add(new TypefaceSpan(typefaceName));
       }
       int size = pageContext.getTextSize(style);
@@ -233,14 +234,14 @@ public class HtmlTextView extends TextView {
             break;
         }
       }
-      if (getName().equals("a") && getAttributeValue("href") != null) {
+      if (getName().equals("a") && getAttribute("href") != null) {
         setMovementMethod(LinkMovementMethod.getInstance());
         spans.add(new ClickableSpan() {
           @Override
           public void onClick(View widget) {
             try {
               pageContext.requestHandler.openLink(
-                  TextElement.this, pageContext.createUri(getAttributeValue("href")));
+                  TextElement.this, pageContext.createUri(getAttribute("href")));
             } catch (URISyntaxException e) {
               Log.e(TAG, "URI Syntax error", e);
             }
@@ -271,7 +272,7 @@ public class HtmlTextView extends TextView {
         }
         images.add(this);
       }
-      drawable = new BitmapDrawable(pageContext.context.getResources(), bitmap);
+      drawable = new BitmapDrawable(pageContext.getContext().getResources(), bitmap);
       if (style != null) {
         setComputedStyle(style);
       }

@@ -3,6 +3,7 @@ package org.kobjects.htmlview2;
 
 import android.view.View;
 
+import elemental.dom.Element;
 import org.kobjects.css.CssProperty;
 import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssUnit;
@@ -16,8 +17,8 @@ import java.util.Map;
 
 public class TableLayoutManager implements LayoutManager {
 
-  static int getColSpan(HtmlElement cell) {
-    String colSpanStr = cell.getAttributeValue("colspan");
+  static int getColSpan(Element cell) {
+    String colSpanStr = cell.getAttribute("colspan");
     if (colSpanStr != null && !colSpanStr.isEmpty()) {
       try {
         return Integer.parseInt(colSpanStr.trim());
@@ -27,8 +28,8 @@ public class TableLayoutManager implements LayoutManager {
     return 1;
   }
 
-  static int getRowSpan(HtmlElement cell) {
-    String colSpanStr = cell.getAttributeValue("rowspan");
+  static int getRowSpan(Element cell) {
+    String colSpanStr = cell.getAttribute("rowspan");
     if (colSpanStr != null && !colSpanStr.isEmpty()) {
       try {
         return Integer.parseInt(colSpanStr.trim());
@@ -39,7 +40,7 @@ public class TableLayoutManager implements LayoutManager {
   }
 
   @Override
-  public void onMeasure(HtmlLayout htmlLayout, int widthMeasureSpec, int heightMeasureSpec) {
+  public void onMeasure(HtmlViewGroup htmlLayout, int widthMeasureSpec, int heightMeasureSpec) {
     int width = View.MeasureSpec.getSize(widthMeasureSpec);
     int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
     int height = View.MeasureSpec.getSize(heightMeasureSpec);
@@ -53,7 +54,7 @@ public class TableLayoutManager implements LayoutManager {
     for (List<View> row : rows) {
       int columnIndex = 0;
       for (View cell: row) {
-        HtmlLayout.LayoutParams cellParams = (HtmlLayout.LayoutParams) cell.getLayoutParams();
+        HtmlViewGroup.LayoutParams cellParams = (HtmlViewGroup.LayoutParams) cell.getLayoutParams();
         ColumnData columnData;
         while (true) {
           while (columnList.size() <= columnIndex) {
@@ -144,7 +145,7 @@ public class TableLayoutManager implements LayoutManager {
       int rowHeight = 0;
       int currentX = 0;
       for (View cell: row) {
-        HtmlLayout.LayoutParams cellParams = (HtmlLayout.LayoutParams) cell.getLayoutParams();
+        HtmlViewGroup.LayoutParams cellParams = (HtmlViewGroup.LayoutParams) cell.getLayoutParams();
         VirtualElement cellElement = cellParams.element;
         ColumnData columnData;
         while (true) {
@@ -200,14 +201,14 @@ public class TableLayoutManager implements LayoutManager {
     htmlLayout.setMeasuredSize(totalWidth, heightMode == View.MeasureSpec.EXACTLY ? height : currentY - borderSpacing);
   }
 
-  List<List<View>> collectRows(HtmlLayout htmlLayout) {
+  List<List<View>> collectRows(HtmlViewGroup htmlLayout) {
     ArrayList<List<View>> rows = new ArrayList<>();
-    if (!(htmlLayout.getLayoutParams() instanceof HtmlLayout.LayoutParams)) {
+    if (!(htmlLayout.getLayoutParams() instanceof HtmlViewGroup.LayoutParams)) {
       return rows;
     }
 
     Iterator<? extends CssStylableElement> rowIterator =
-        ((HtmlLayout.LayoutParams) htmlLayout.getLayoutParams()).element.getChildElementIterator();
+        ((HtmlViewGroup.LayoutParams) htmlLayout.getLayoutParams()).element.getChildElementIterator();
 
     while (rowIterator.hasNext()) {
       CssStylableElement potentialRowElement = rowIterator.next();
@@ -219,7 +220,7 @@ public class TableLayoutManager implements LayoutManager {
         while (colIterator.hasNext()) {
           CssStylableElement potentialCell = colIterator.next();
           if (potentialCell instanceof ViewElement) {
-            cells.add(((ViewElement) potentialCell).view);
+            cells.add(((ViewElement) potentialCell).getView());
           }
         }
       }

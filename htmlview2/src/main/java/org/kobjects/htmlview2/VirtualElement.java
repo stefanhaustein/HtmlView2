@@ -1,5 +1,7 @@
 package org.kobjects.htmlview2;
 
+import elemental.dom.Element;
+import elemental.dom.Node;
 import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssStyle;
 
@@ -7,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-public class VirtualElement implements HtmlElement {
+public class VirtualElement implements Element, CssStylableElement {
   private final String name;
-  ArrayList<HtmlElement> children = new ArrayList<>();
+  ArrayList<VirtualElement> children = new ArrayList<>();
   LinkedHashMap<String,String> attributes = new LinkedHashMap<>();
   CssStyle style;
 
@@ -18,17 +20,23 @@ public class VirtualElement implements HtmlElement {
   }
 
   @Override
-  public void add(HtmlElement element) {
-    children.add(element);
+  public Node appendChild(Node childNode) {
+    children.add((VirtualElement) childNode);
+    return childNode;
   }
 
   @Override
-  public String getAttributeValue(String name) {
+  public String getAttribute(String name) {
     return attributes.get(name);
   }
 
   @Override
   public String getName() {
+    return name;
+  }
+
+  @Override
+  public String getLocalName() {
     return name;
   }
 

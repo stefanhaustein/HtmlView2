@@ -579,7 +579,7 @@ public class CssStyleSheet {
       for (int i = 0; i < selectAttributeOperation.length(); i++) {
         int type = selectAttributeOperation.charAt(i);
         String name = selectAttributeName.get(i);
-        String value = element.getAttributeValue(name);
+        String value = element.getAttribute(name);
         if (value == null) {
           continue;
         }
@@ -751,7 +751,7 @@ public class CssStyleSheet {
       style.setFrom((queue.get(i)));
     }
   
-    String styleAttr = element.getAttributeValue("style");
+    String styleAttr = element.getAttribute("style");
     if (styleAttr != null) {
       style.read(baseUri, styleAttr);
     }

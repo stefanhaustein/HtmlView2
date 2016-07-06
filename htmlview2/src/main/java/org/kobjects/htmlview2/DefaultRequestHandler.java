@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import elemental.dom.Element;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -142,14 +143,14 @@ public class DefaultRequestHandler implements RequestHandler {
     }.execute(null, null);
   }
 
-  public void openLink(HtmlElement element, URI uri) {
+  public void openLink(Element element, URI uri) {
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.setData(Uri.parse(uri.toString()));
     context.startActivity(intent);
   }
 
   @Override
-  public void requestStyleSheet(HtmlLayout rootElement, URI uri) {
+  public void requestStyleSheet(HtmlViewGroup rootElement, URI uri) {
     System.out.println("NYI: requestStyleSheet; uri: " + uri);
   }
 

@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.widget.ScrollView;
 
 import org.kobjects.htmlview2.DefaultRequestHandler;
-import org.kobjects.htmlview2.PageContext;
-import org.kobjects.htmlview2.HtmlLayout;
+import org.kobjects.htmlview2.HtmlView;
+import org.kobjects.htmlview2.HtmlViewGroup;
 import org.kobjects.htmlview2.parser.HtmlProcessor;
 
 import java.io.BufferedReader;
@@ -26,12 +26,12 @@ public class MainActivity extends AppCompatActivity {
       Reader reader = new BufferedReader(
           new InputStreamReader(getAssets().open("index.html")));
 
-      PageContext pageContext = new PageContext(this, new DefaultRequestHandler(this),
+      HtmlView htmlView = new HtmlView(this, new DefaultRequestHandler(this),
           new URI("file:///android_asset/"));
-      HtmlLayout html = htmlProcessor.parse(reader, pageContext);
+      htmlProcessor.parse(reader, htmlView);
 
       ScrollView scrollView = new ScrollView(this);
-      scrollView.addView(html);
+      scrollView.addView(htmlView);
       setContentView(scrollView);
 
     } catch (Exception e) {

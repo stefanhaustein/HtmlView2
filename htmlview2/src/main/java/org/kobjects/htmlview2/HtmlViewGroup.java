@@ -1,5 +1,6 @@
 package org.kobjects.htmlview2;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -11,17 +12,11 @@ import android.view.ViewGroup;
 
 import org.kobjects.css.CssEnum;
 import org.kobjects.css.CssProperty;
-import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssStyle;
 import org.kobjects.css.CssUnit;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
-
-public class HtmlLayout extends ViewGroup {
+public class HtmlViewGroup extends ViewGroup {
   private static final CssStyle EMTPY_STYLE = new CssStyle();
 
   private Paint borderPaint = new Paint();
@@ -29,19 +24,17 @@ public class HtmlLayout extends ViewGroup {
   private Paint.FontMetrics bulletMetrics;
   // Set in onMeasure
   int cssContentWidth;
-  LayoutManager layoutManager;
-  PageContext pageContext;
+  HtmlView htmlView;
 
   static final LayoutManager BLOCK_LAYOUT_MANAGER = new BlockLayoutManager();
   static final LayoutManager TABLE_LAYOUT_MANAGER = new TableLayoutManager();
 
-  public HtmlLayout(PageContext context) {
-    super(context.context);
-    this.pageContext = context;
+  public HtmlViewGroup(Context context, HtmlView htmlView) {
+    super(context);
+    this.htmlView = htmlView;
     setWillNotDraw(false);
     setClipChildren(false);
   }
-
 
   private void drawBackgroud(Canvas canvas, LayoutParams layoutParams,
                              int left, int top, int right, int bottom) {
@@ -204,7 +197,7 @@ public class HtmlLayout extends ViewGroup {
           bulletMetrics = new Paint.FontMetrics();
           //Paint.Style.FILL);
         }
-        pageContext.setPaint(childStyle, bulletPaint);
+        htmlView.setPaint(childStyle, bulletPaint);
         bulletPaint.getFontMetrics(bulletMetrics);
         canvas.drawText(bullet, -bulletPaint.measureText(bullet), getChildLayoutParams(i).measuredY - bulletMetrics.top, bulletPaint);
       }
@@ -228,7 +221,7 @@ public class HtmlLayout extends ViewGroup {
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     int width = MeasureSpec.getSize(widthMeasureSpec);
 
-    cssContentWidth = Math.round(width / pageContext.scale);
+    cssContentWidth = Math.round(width / htmlView.scale);
 
     // "Regular" children
 
@@ -239,7 +232,7 @@ public class HtmlLayout extends ViewGroup {
 
     // Absolute positioning
 
-    HtmlLayout container = null;
+    HtmlViewGroup container = null;
     int dx = 0;
     int dy = 0;
     for (int i = 0; i < getChildCount(); i++) {
@@ -251,7 +244,7 @@ public class HtmlLayout extends ViewGroup {
       }
       if (container == null) {
         container = this;
-        while (container.getParent() instanceof HtmlLayout) {
+        while (container.getParent() instanceof HtmlViewGroup) {
           if (container.getStyle().isBlock()) {
             CssEnum containerDisplay = container.getStyle().getEnum(CssProperty.DISPLAY);
             if (containerDisplay == CssEnum.ABSOLUTE || containerDisplay == CssEnum.RELATIVE) {
@@ -260,19 +253,19 @@ public class HtmlLayout extends ViewGroup {
           }
           dx += ((LayoutParams) container.getLayoutParams()).measuredX;
           dy += ((LayoutParams) container.getLayoutParams()).measuredY;
-          container = (HtmlLayout) container.getParent();
+          container = (HtmlViewGroup) container.getParent();
         }
       }
       onMeasureAbsolute(container, i, dx, dy);
     }
   }
 
-  void onMeasureAbsolute(HtmlLayout container, int i, int dx, int dy) {
+  void onMeasureAbsolute(HtmlViewGroup container, int i, int dx, int dy) {
     View child = getChildAt(i);
-    HtmlLayout.LayoutParams childParams = (HtmlLayout.LayoutParams) child.getLayoutParams();
+    HtmlViewGroup.LayoutParams childParams = (HtmlViewGroup.LayoutParams) child.getLayoutParams();
     CssStyle childStyle = childParams.style();
 
-    int containerWidth = Math.round(container.cssContentWidth * pageContext.scale);
+    int containerWidth = Math.round(container.cssContentWidth * htmlView.scale);
 
     int childLeft = childParams.getMarginLeft() + childParams.getBorderLeft() + childParams.getPaddingLeft();
     int childRight = childParams.getMarginRight() + childParams.getBorderRight() + childParams.getPaddingRight();
@@ -292,16 +285,16 @@ public class HtmlLayout extends ViewGroup {
 
     int measuredX;
     if (childStyle.isSet(CssProperty.LEFT)) {
-      measuredX = childLeft + Math.round(pageContext.scale * childStyle.get(CssProperty.LEFT, CssUnit.PX, container.cssContentWidth));
+      measuredX = childLeft + Math.round(htmlView.scale * childStyle.get(CssProperty.LEFT, CssUnit.PX, container.cssContentWidth));
     } else if (childStyle.isSet(CssProperty.RIGHT)) {
-      measuredX = containerWidth - child.getMeasuredWidth() - childRight - Math.round(pageContext.scale * (childStyle.get(CssProperty.RIGHT, CssUnit.PX, container.cssContentWidth)));
+      measuredX = containerWidth - child.getMeasuredWidth() - childRight - Math.round(htmlView.scale * (childStyle.get(CssProperty.RIGHT, CssUnit.PX, container.cssContentWidth)));
     } else {
       measuredX = childLeft;
     }
 
     int measuredY;
     if (childStyle.isSet(CssProperty.TOP)) {
-      measuredY = childTop + Math.round(pageContext.scale * childStyle.get(CssProperty.TOP, CssUnit.PX, container.cssContentWidth));
+      measuredY = childTop + Math.round(htmlView.scale * childStyle.get(CssProperty.TOP, CssUnit.PX, container.cssContentWidth));
   //  } else if (childParams.style.isSet(CssProperty.BOTTOM)) {
       // TODO
       // measuredY = container.getMeasuredHeight() - child.getMeasuredHeight() - childBottom - Math.round(htmlContext.scale * (childParams.style.get(CssProperty.BOTTOM, CssUnit.PX, container.cssContentWidth)));
@@ -345,7 +338,7 @@ public class HtmlLayout extends ViewGroup {
     }
 
     public int getScaledWidth(CssProperty property) {
-      return Math.round(style().get(property, CssUnit.PX, cssContentWidth) * pageContext.scale);
+      return Math.round(style().get(property, CssUnit.PX, cssContentWidth) * htmlView.scale);
     }
 
     public int getBorderTop() {
@@ -389,7 +382,7 @@ public class HtmlLayout extends ViewGroup {
         return margin;
       }
 
-      int availableWidthForMargins = ((int) (cssContentWidth * pageContext.scale))
+      int availableWidthForMargins = ((int) (cssContentWidth * htmlView.scale))
           - getScaledWidth(CssProperty.WIDTH) - getPaddingLeft() - getPaddingRight()
           - getBorderLeft() - getBorderRight();
 

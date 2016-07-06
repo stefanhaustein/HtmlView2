@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 public interface CssStylableElement {
 
-  String getAttributeValue(String name);
+  String getAttribute(String name);
 
   String getName();
 
