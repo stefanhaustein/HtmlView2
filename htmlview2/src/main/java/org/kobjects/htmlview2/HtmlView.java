@@ -15,14 +15,15 @@ import java.net.URISyntaxException;
 
 
 /** 
- * Context information for a HTML document; holds references to the base URI and the style
- * sheet.
+ * View corresponding to the HTML root element. Also holds state information such as the location and
+ * css pixel scale. Can't refer to the HTML body element directly because margins, borders and
+ * paddings are managed by the parent HtmlViewGroup.
  */
 public class HtmlView extends HtmlViewGroup implements Window {
   static final int PAINT_MASK = ~(Paint.STRIKE_THRU_TEXT_FLAG | Paint.UNDERLINE_TEXT_FLAG);
 
   final CssStyleSheet styleSheet = CssStyleSheet.createDefault();
-  final RequestHandler requestHandler;
+  final RequestHandler requestHandler;  // TODO(haustein): Inline
   float scale;
   public URI baseUri;
   HtmlDocument document;
