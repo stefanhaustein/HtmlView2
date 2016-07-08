@@ -1,17 +1,15 @@
-package org.kobjects.htmlview2.parser;
+package org.kobjects.htmlview2;
 
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 
 import elemental.dom.Element;
 import org.kobjects.css.CssStyleSheet;
+import org.kobjects.html.HtmlParser;
 import org.kobjects.htmlview2.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -42,7 +40,10 @@ public class HtmlProcessor {
       parser.setInput(reader);
 
       parser.next();
+
       parseContainerContent(htmlView, null);
+      TreeSync.sync()
+
       CssStyleSheet styleSheet = htmlView.getStyleSheet();
       for (int i = 0; i < htmlView.getChildCount(); i++) {
         styleSheet.apply(((HtmlViewGroup.LayoutParams) htmlView.getChildAt(i).getLayoutParams()).element, null);
@@ -87,13 +88,15 @@ public class HtmlProcessor {
    * elementStack. The element stack is used when a previous HtmlTextView was interrupted
    * because of block content.
    */
-  private void parseHtmlText(HtmlTextView htmlTextView, Element logicalContainer, List<HtmlTextView.TextElement> elementStack) throws XmlPullParserException, IOException {
-    HtmlTextView.TextElement element = null;
+  private void parseHtmlText(HtmlTextView htmlTextView, Element logicalContainer, List<TextElement> elementStack) throws XmlPullParserException, IOException {
+    TextElement element = null;
     // Reconstruct elements
     if (elementStack.size() > 0) {
       element = htmlTextView.addElement(logicalContainer, elementStack.get(0).getName());
       for (int i = 1; i < elementStack.size(); i++) {
-        element = element.addChild(elementStack.get(i).getName());
+        TextElement child = (TextElement) htmlView.getDocument().createElement(elementStack.get(i).getName());
+        element.appendChild(child);
+        element = child;
       }
     }
     // Resume parsing
@@ -107,7 +110,9 @@ public class HtmlProcessor {
       if (element == null) {
         element = htmlTextView.addElement(logicalContainer, parser.getName());
       } else {
-        element = element.addChild(parser.getName());
+        TextElement child = (TextElement) htmlView.getDocument().createElement(parser.getName());
+        element.appendChild(child);
+        element = child;
       }
       parseTextElement(element, elementStack);
     }
@@ -115,7 +120,7 @@ public class HtmlProcessor {
 
 
   // Precondition: on text element start tag
-  private void parseTextElement(HtmlTextView.TextElement element, List<HtmlTextView.TextElement> elementStack) throws IOException, XmlPullParserException {
+  private void parseTextElement(TextElement element, List<TextElement> elementStack) throws IOException, XmlPullParserException {
     // System.out.println("parseTextElement: " + parser.getName());
     elementStack.add(element);
     for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -126,8 +131,10 @@ public class HtmlProcessor {
     while (parser.getEventType() != XmlPullParser.END_TAG) {
       switch (parser.getEventType()) {
         case XmlPullParser.START_TAG:
-          if (parser.elementProperty(HtmlParser.ElementProperty.TEXT) || parser.getName().equals("img")) {
-            parseTextElement(element.addChild(parser.getName()), elementStack);
+          if (parser.hasElementProperty(parser.getName(), HtmlParser.ElementProperty.TEXT) || parser.getName().equals("img")) {
+            TextElement child = (TextElement) htmlView.getDocument().createElement(parser.getName());
+            element.appendChild(child);
+            parseTextElement(child, elementStack);
           } else {
             // Fall back to parseContainerContent, preserving the open element stack
             element.end();
@@ -152,7 +159,7 @@ public class HtmlProcessor {
   private void parseContainerContent(HtmlViewGroup physicalContainer, VirtualElement logicalContainer) throws IOException, XmlPullParserException {
     HtmlTextView pendingText = null;
     // System.out.println("parseContainerContent " + name);
-    ArrayList<HtmlTextView.TextElement> textElementStack = null;
+    ArrayList<TextElement> textElementStack = null;
     while (parser.getEventType() != XmlPullParser.END_DOCUMENT
         && parser.getEventType() != XmlPullParser.END_TAG) {
       switch (parser.getEventType()) {
@@ -186,13 +193,13 @@ public class HtmlProcessor {
             String styleText = parseTextContent();
             htmlView.getStyleSheet().read(styleText, htmlView.getBaseUri(), null, null, null);
             parser.next();
-          } else if (parser.elementProperty(HtmlParser.ElementProperty.LOGICAL)) {
+          } else if (parser.hasElementProperty(parser.getName(), HtmlParser.ElementProperty.LOGICAL)) {
             VirtualElement logicalChild = new VirtualElement(parser.getName());
             logicalContainer.appendChild(logicalChild);
             parser.next();
             parseContainerContent(physicalContainer, logicalChild);
             parser.next();
-          } else if (parser.elementProperty(HtmlParser.ElementProperty.TEXT) || parser.getName().equals("img")) {
+          } else if (parser.hasElementProperty(parser.getName(), HtmlParser.ElementProperty.TEXT) || parser.getName().equals("img")) {
             if (pendingText == null) {
               pendingText = new HtmlTextView(htmlView);
               physicalContainer.addView(pendingText);

@@ -5,23 +5,21 @@ import elemental.dom.Node;
 import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssStyle;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-public class VirtualElement implements Element, CssStylableElement {
+public class DomElement extends DomNode implements Element, CssStylableElement {
   private final String name;
-  ArrayList<VirtualElement> children = new ArrayList<>();
   LinkedHashMap<String,String> attributes = new LinkedHashMap<>();
   CssStyle style;
 
-  public VirtualElement(String name) {
+  public DomElement(String name) {
     this.name = name;
   }
 
   @Override
   public Node appendChild(Node childNode) {
-    children.add((VirtualElement) childNode);
+    children.add((DomElement) childNode);
     return childNode;
   }
 

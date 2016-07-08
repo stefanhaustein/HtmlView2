@@ -1,6 +1,4 @@
-package org.kobjects.htmlview2.parser;
-
-import android.util.Log;
+package org.kobjects.html;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -20,13 +18,12 @@ import java.util.LinkedHashMap;
  */
 public class HtmlParser {
 
-  enum ElementProperty {
+  public enum ElementProperty {
     SELF_CLOSING,  // Automatically close this element
     TEXT,          // Element contains text, will be parsed to HtmlTextView.
     LOGICAL,
   }
 
-  private static final String TAG = "HtmlParser";
   private static final String[] HTML_ENTITY_TABLE = {
       "acute", "\u00B4",
       "apos", "\u0027",
@@ -88,6 +85,10 @@ public class HtmlParser {
     return result == null ? EMPTY_ELEMENT_DATA : result;
   }
 
+  public static boolean hasElementProperty(String name, ElementProperty property) {
+    return getElementData(name).properties.contains(property);
+  }
+
   private XmlPullParser parser;
   private int currentEvent;
   private String currentName;
@@ -97,10 +98,6 @@ public class HtmlParser {
   public HtmlParser() throws XmlPullParserException {
     parser = XmlPullParserFactory.newInstance().newPullParser();
     parser.setFeature("http://xmlpull.org/v1/doc/features.html#relaxed", true);
-  }
-
-  public boolean elementProperty(ElementProperty property) {
-    return getElementData(currentName).properties.contains(property);
   }
 
   public int getAttributeCount() {
@@ -137,7 +134,8 @@ public class HtmlParser {
 
   public int next() throws IOException, XmlPullParserException {
     // Insert close tags for self-closing elements.
-    if (currentEvent == XmlPullParser.START_TAG && elementProperty(ElementProperty.SELF_CLOSING)) {
+    if (currentEvent == XmlPullParser.START_TAG &&
+            hasElementProperty(currentName, ElementProperty.SELF_CLOSING)) {
       currentEvent = XmlPullParser.END_TAG;
       insertedEvent = true;
       openTags.remove(openTags.size() - 1);
@@ -176,7 +174,7 @@ public class HtmlParser {
       currentName = parser.getName();
       int i = openTags.lastIndexOf(currentName);
       if (i == -1) {
-        Log.d(TAG, "Ignoring </" + currentName + ">: opening tag not found in " + openTags + " at " + parser.getPositionDescription());
+        System.err.println("Ignoring </" + currentName + ">: opening tag not found in " + openTags + " at " + parser.getPositionDescription());
         return next();
       }
       if (i != openTags.size() - 1) {

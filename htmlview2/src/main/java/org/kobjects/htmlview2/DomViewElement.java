@@ -5,13 +5,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import elemental.dom.Node;
 import org.kobjects.css.CssStyle;
 
-public class ViewElement extends VirtualElement {
-    private final HtmlDocument document;
+public class DomViewElement extends DomElement {
+    private final DomDocument document;
     private View view;
 
-    public ViewElement(HtmlDocument document, String name, View view) {
+    public DomViewElement(DomDocument document, String name, View view) {
         super(name);
         this.view = view;
         this.document = document;
@@ -47,5 +48,11 @@ public class ViewElement extends VirtualElement {
             }
         }
         return view;
+    }
+
+    @Override
+    public Node appendChild(Node child) {
+        super.appendChild(child);
+
     }
 }
