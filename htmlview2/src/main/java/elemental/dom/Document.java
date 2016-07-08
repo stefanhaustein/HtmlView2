@@ -1,5 +1,8 @@
 package elemental.dom;
 
-public interface Document {
+public interface Document extends Node {
+    Element createElement(String name);
+    Text createTextNode(String text);
 
+    Element getDocumentElement();
 }

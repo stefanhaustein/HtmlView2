@@ -1,14 +1,32 @@
 package org.kobjects.htmlview2;
 
-public abstract class DomParentNode extends DomNode {
+import elemental.dom.Node;
+
+abstract class DomParentNode extends DomNode {
     DomNode firstChild;
     DomNode lastChild;
 
-    public DomNode getFirstChild() {
+    DomParentNode(DomDocument ownerDocument) {
+        super(ownerDocument);
+    }
+
+    public DomNode getFirstChild() {
         return firstChild;
     }
 
     public DomNode getLastChild() {
         return lastChild;
+    }
+
+    public DomNode appendChild(Node node) {
+        DomNode domNode = (DomNode) node;
+        if (lastChild == null) {
+            lastChild = firstChild = domNode;
+        } else {
+            lastChild.nextSibling = domNode;
+            domNode.previousSibling = lastChild;
+            lastChild = domNode;
+        }
+        return domNode;
     }
 }

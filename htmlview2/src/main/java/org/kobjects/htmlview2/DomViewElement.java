@@ -5,17 +5,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import elemental.dom.Node;
 import org.kobjects.css.CssStyle;
 
-public class DomViewElement extends DomElement {
-    private final DomDocument document;
+class DomViewElement extends DomElement {
     private View view;
 
-    public DomViewElement(DomDocument document, String name, View view) {
-        super(name);
+    DomViewElement(DomDocument ownerDocument, String name, View view) {
+        super(ownerDocument, name);
         this.view = view;
-        this.document = document;
     }
 
     @Override
@@ -37,22 +34,16 @@ public class DomViewElement extends DomElement {
             String type = getAttribute("type");
             String value = getAttribute("value");
             if ("button".equals(type) || "submit".equals(type) || "reset".equals(type)) {
-                view = new Button(document.htmlContext.getContext());
+                view = new Button(ownerDocument.htmlContext.getContext());
             } else if ("checkbox".equals(type)) {
-                view = new CheckBox(document.htmlContext.getContext());
+                view = new CheckBox(ownerDocument.htmlContext.getContext());
             } else {
-                view = new EditText(document.htmlContext.getContext());
+                view = new EditText(ownerDocument.htmlContext.getContext());
             }
             if (value != null) {
                 ((TextView) view).setText(value);
             }
         }
         return view;
-    }
-
-    @Override
-    public Node appendChild(Node child) {
-        super.appendChild(child);
-
     }
 }

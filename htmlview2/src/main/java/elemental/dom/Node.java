@@ -1,5 +1,15 @@
 package elemental.dom;
 
 public interface Node {
-    Node appendChild(Node newChild);
+    Node getParentNode();
+    Element getParentElement();
+    Document getOwnerDocument();
+
+    Node getFirstChild();
+    Node getLastChild();
+    Node getNextSibling();
+    Node getPreviousSibling();
+
+    Node appendChild(Node node);
+
 }

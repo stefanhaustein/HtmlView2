@@ -25,7 +25,7 @@ public class HtmlView extends HtmlViewGroup implements Window {
   final RequestHandler requestHandler;
   float scale;
   public URI baseUri;
-  HtmlDocument document;
+  DomDocument document;
 
   public HtmlView(Context androidContext, RequestHandler requestHandler, URI baseUri) {
     super(androidContext, null);
@@ -50,9 +50,9 @@ public class HtmlView extends HtmlViewGroup implements Window {
     return baseUri.resolve(uri);
   }
 
-  public HtmlDocument getDocument() {
+  public DomDocument getDocument() {
     if (document == null) {
-      document = new HtmlDocument(this);
+      document = new DomDocument(this);
     }
     return document;
   }

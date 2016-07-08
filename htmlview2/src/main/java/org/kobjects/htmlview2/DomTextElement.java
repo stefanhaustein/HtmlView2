@@ -6,7 +6,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.*;
 import android.util.Log;
 import android.view.View;
-import elemental.dom.Node;
 import org.kobjects.css.CssEnum;
 import org.kobjects.css.CssProperty;
 import org.kobjects.css.CssStyle;
@@ -25,8 +24,8 @@ public class DomTextElement extends DomElement implements ImageTarget {
   BitmapDrawable drawable;
   ArrayList<Object> spans = new ArrayList<>();
 
-  DomTextElement(String name) {
-    super(name);
+  DomTextElement(DomDocument ownerDocument, String name) {
+    super(ownerDocument, name);
   }
 
 
@@ -49,13 +48,14 @@ public class DomTextElement extends DomElement implements ImageTarget {
       htmlTextView.appendRaw("\u200b");
       htmlTextView.pendingBreakPosition = htmlTextView.content.length() - 1;
     } else {
-      for (int i = 0; i < children.size(); i++) {
-        Node child = children.get(i);
-        if (child instanceof TextNode) {
-          htmlTextView.appendNormalized(((TextNode) child).text);
+      DomNode child = getFirstChild();
+      while (child != null) {
+        if (child instanceof DomTextNode) {
+          htmlTextView.appendNormalized(((DomTextNode) child).text);
         } else {
           ((DomTextElement) child).sync(htmlTextView);
         }
+        child = child.getNextSibling();
       }
     }
     end = htmlTextView.content.length();

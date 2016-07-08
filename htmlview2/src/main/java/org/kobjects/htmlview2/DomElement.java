@@ -8,19 +8,14 @@ import org.kobjects.css.CssStyle;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-public class DomElement extends DomNode implements Element, CssStylableElement {
+public class DomElement extends DomParentNode implements Element, CssStylableElement {
   private final String name;
   LinkedHashMap<String,String> attributes = new LinkedHashMap<>();
   CssStyle style;
 
-  public DomElement(String name) {
+  public DomElement(DomDocument ownerDocument, String name) {
+    super(ownerDocument);
     this.name = name;
-  }
-
-  @Override
-  public Node appendChild(Node childNode) {
-    children.add((DomElement) childNode);
-    return childNode;
   }
 
   @Override
@@ -40,7 +35,57 @@ public class DomElement extends DomNode implements Element, CssStylableElement {
 
   @Override
   public Iterator<? extends CssStylableElement> getChildElementIterator() {
-    return children.iterator();
+    return new Iterator<CssStylableElement>() {
+      DomElement next = getFirstElementChild();
+
+      @Override
+      public boolean hasNext() {
+        return next != null;
+      }
+
+      @Override
+      public CssStylableElement next() {
+        DomElement result = next;
+        next = next.getNextElementSibling();
+        return result;
+      }
+    };
+  }
+
+  @Override
+  public DomElement getFirstElementChild() {
+    DomNode result = getFirstChild();
+    while (result != null && !(result instanceof DomElement)) {
+      result = result.getNextSibling();
+    }
+    return (DomElement) result;
+  }
+
+  @Override
+  public DomElement getLastElementChild() {
+    DomNode result = getLastChild();
+    while (result != null && !(result instanceof DomElement)) {
+      result = result.getPreviousSibling();
+    }
+    return (DomElement) result;
+  }
+
+  @Override
+  public DomElement getNextElementSibling() {
+    DomNode result = getNextSibling();
+    while (result != null && !(result instanceof DomElement)) {
+      result = result.getNextSibling();
+    }
+    return (DomElement) result;
+  }
+
+  @Override
+  public DomElement getPreviousElementSibling() {
+    DomNode result = getPreviousSibling();
+    while (result != null && !(result instanceof DomElement)) {
+      result = result.getNextSibling();
+    }
+    return (DomElement) result;
   }
 
   @Override

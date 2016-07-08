@@ -6,8 +6,7 @@ import android.widget.ScrollView;
 
 import org.kobjects.htmlview2.DefaultRequestHandler;
 import org.kobjects.htmlview2.HtmlView;
-import org.kobjects.htmlview2.HtmlViewGroup;
-import org.kobjects.htmlview2.parser.HtmlProcessor;
+import org.kobjects.htmlview2.HtmlProcessor;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

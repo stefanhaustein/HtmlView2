@@ -8,9 +8,11 @@ import android.widget.TextView;
 
 
 import elemental.dom.Element;
+import elemental.dom.Node;
+import elemental.dom.Text;
+import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssStyleSheet;
 import org.kobjects.html.HtmlParser;
-import org.kobjects.htmlview2.*;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -30,6 +32,7 @@ public class HtmlProcessor {
   private static final String TAG = "HtmlProcessor";
   private HtmlParser parser;
   private HtmlView htmlView;
+  private DomDocument document;
 
   public void parse(Reader reader, HtmlView htmlView) {
     this.htmlView = htmlView;
@@ -38,15 +41,20 @@ public class HtmlProcessor {
         parser = new HtmlParser();
       }
       parser.setInput(reader);
-
       parser.next();
+      document = htmlView.getDocument();
 
-      parseContainerContent(htmlView, null);
-      TreeSync.sync()
+      parseContainerContent(document);
+
+      TreeSync.sync(htmlView, document);
 
       CssStyleSheet styleSheet = htmlView.getStyleSheet();
-      for (int i = 0; i < htmlView.getChildCount(); i++) {
-        styleSheet.apply(((HtmlViewGroup.LayoutParams) htmlView.getChildAt(i).getLayoutParams()).element, null);
+      Node child = document.getFirstChild();
+      while (child != null) {
+        if (child instanceof CssStylableElement) {
+          styleSheet.apply((CssStylableElement) child, null);
+        }
+        child = child.getNextSibling();
       }
 
     } catch (XmlPullParserException e) {
@@ -88,29 +96,31 @@ public class HtmlProcessor {
    * elementStack. The element stack is used when a previous HtmlTextView was interrupted
    * because of block content.
    */
-  private void parseHtmlText(HtmlTextView htmlTextView, Element logicalContainer, List<TextElement> elementStack) throws XmlPullParserException, IOException {
-    TextElement element = null;
+  private void parseHtmlText(Node container, List<Element> elementStack) throws XmlPullParserException, IOException {
+    Element element = null;
     // Reconstruct elements
     if (elementStack.size() > 0) {
-      element = htmlTextView.addElement(logicalContainer, elementStack.get(0).getName());
+      element = document.createElement(elementStack.get(0).getLocalName());
       for (int i = 1; i < elementStack.size(); i++) {
-        TextElement child = (TextElement) htmlView.getDocument().createElement(elementStack.get(i).getName());
+        DomTextElement child = (DomTextElement) htmlView.getDocument().createElement(elementStack.get(i).getLocalName());
         element.appendChild(child);
         element = child;
       }
     }
     // Resume parsing
     if (parser.getEventType() == XmlPullParser.TEXT) {
+      Text text = document.createTextNode(parser.getText());
       if (element == null) {
-        htmlTextView.appendNormalized(parser.getText());
+        container.appendChild(text);
       } else {
-        element.appendNormalized(parser.getText());
+        element.appendChild(text);
       }
     } else {  // Must be on START_TAG here
       if (element == null) {
-        element = htmlTextView.addElement(logicalContainer, parser.getName());
+        element = document.createElement(parser.getName());
+        container.appendChild(element);
       } else {
-        TextElement child = (TextElement) htmlView.getDocument().createElement(parser.getName());
+        DomTextElement child = (DomTextElement) htmlView.getDocument().createElement(parser.getName());
         element.appendChild(child);
         element = child;
       }
@@ -120,7 +130,7 @@ public class HtmlProcessor {
 
 
   // Precondition: on text element start tag
-  private void parseTextElement(TextElement element, List<TextElement> elementStack) throws IOException, XmlPullParserException {
+  private void parseTextElement(Element element, List<Element> elementStack) throws IOException, XmlPullParserException {
     // System.out.println("parseTextElement: " + parser.getName());
     elementStack.add(element);
     for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -132,18 +142,17 @@ public class HtmlProcessor {
       switch (parser.getEventType()) {
         case XmlPullParser.START_TAG:
           if (parser.hasElementProperty(parser.getName(), HtmlParser.ElementProperty.TEXT) || parser.getName().equals("img")) {
-            TextElement child = (TextElement) htmlView.getDocument().createElement(parser.getName());
+            DomTextElement child = (DomTextElement) htmlView.getDocument().createElement(parser.getName());
             element.appendChild(child);
             parseTextElement(child, elementStack);
           } else {
             // Fall back to parseContainerContent, preserving the open element stack
-            element.end();
             return;
           }
           break;
 
         case XmlPullParser.TEXT:
-          element.appendNormalized(parser.getText());
+          element.appendChild(htmlView.getDocument().createTextNode(parser.getText()));
           parser.next();
           break;
 
@@ -151,15 +160,13 @@ public class HtmlProcessor {
           throw new RuntimeException("Unexpected: " + parser.getPositionDescription());
       }
     }
-    element.end();
     elementStack.remove(elementStack.size() - 1);
     parser.next();
   }
 
-  private void parseContainerContent(HtmlViewGroup physicalContainer, VirtualElement logicalContainer) throws IOException, XmlPullParserException {
-    HtmlTextView pendingText = null;
+  private void parseContainerContent(Node container) throws IOException, XmlPullParserException {
     // System.out.println("parseContainerContent " + name);
-    ArrayList<TextElement> textElementStack = null;
+    ArrayList<Element> textElementStack = null;
     while (parser.getEventType() != XmlPullParser.END_DOCUMENT
         && parser.getEventType() != XmlPullParser.END_TAG) {
       switch (parser.getEventType()) {
@@ -167,7 +174,7 @@ public class HtmlProcessor {
           String childName = parser.getName();
           if (childName.equals("html")) { // || childName.equals("head")) {
             parser.next();
-            parseContainerContent(physicalContainer, logicalContainer);
+            parseContainerContent(container);
             parser.next();
           } else if (childName.equals("link")) {
             if ("stylesheet".equals(parser.getAttributeValue("rel"))) {
@@ -194,35 +201,26 @@ public class HtmlProcessor {
             htmlView.getStyleSheet().read(styleText, htmlView.getBaseUri(), null, null, null);
             parser.next();
           } else if (parser.hasElementProperty(parser.getName(), HtmlParser.ElementProperty.LOGICAL)) {
-            VirtualElement logicalChild = new VirtualElement(parser.getName());
-            logicalContainer.appendChild(logicalChild);
+            Element child = document.createElement(parser.getName());
+            container.appendChild(child);
             parser.next();
-            parseContainerContent(physicalContainer, logicalChild);
+            parseContainerContent(child);
             parser.next();
           } else if (parser.hasElementProperty(parser.getName(), HtmlParser.ElementProperty.TEXT) || parser.getName().equals("img")) {
-            if (pendingText == null) {
-              pendingText = new HtmlTextView(htmlView);
-              physicalContainer.addView(pendingText);
-            }
             if (textElementStack == null) {
               textElementStack = new ArrayList<>();
             }
-            parseHtmlText(pendingText, logicalContainer, textElementStack);
+            parseHtmlText(container, textElementStack);
           } else {
-            pendingText = null;
-            ViewElement viewElement = (ViewElement) htmlView.getDocument().createElement(parser.getName());
+            DomViewElement viewElement = (DomViewElement) htmlView.getDocument().createElement(parser.getName());
             for (int i = 0; i < parser.getAttributeCount(); i++) {
               viewElement.setAttribute(parser.getAttributeName(i), parser.getAttributeValue(i));
             }
-            View child = viewElement.getView();
-            physicalContainer.addView(child);
-            ((HtmlViewGroup.LayoutParams) child.getLayoutParams()).element = viewElement;
-            if (logicalContainer != null) {
-              logicalContainer.appendChild(viewElement);
-            }
+            container.appendChild(viewElement);
             parser.next();
+            View child = viewElement.getView();
             if (child instanceof HtmlViewGroup) {
-              parseContainerContent((HtmlViewGroup) child, viewElement);
+              parseContainerContent(viewElement);
             } else if ("select".equals(childName)) {
               parseSelectContent((Spinner) child);
             } else {
@@ -238,15 +236,11 @@ public class HtmlProcessor {
           break;
         }
         case XmlPullParser.TEXT:
-          if (containsText(parser.getText()) && logicalContainer != null) {
-            if (pendingText == null) {
-              pendingText = new HtmlTextView(htmlView);
-              physicalContainer.addView(pendingText);
-            }
+          if (containsText(parser.getText())) {
             if (textElementStack != null && textElementStack.size() != 0) {
-              parseHtmlText(pendingText, logicalContainer, textElementStack);
+              parseHtmlText(container, textElementStack);
             } else {
-              pendingText.appendNormalized(parser.getText());
+              container.appendChild(document.createTextNode(parser.getText()));
             }
           }
           parser.next();

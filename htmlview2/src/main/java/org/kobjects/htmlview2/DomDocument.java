@@ -9,7 +9,7 @@ import elemental.dom.Element;
 import elemental.dom.Node;
 import org.kobjects.html.HtmlParser;
 
-public class DomDocument extends DomNode implements Document {
+public class DomDocument extends DomParentNode implements Document {
     protected final HtmlView htmlContext;
 
     protected DomDocument(HtmlView context) {
@@ -17,12 +17,12 @@ public class DomDocument extends DomNode implements Document {
         this.htmlContext = context;
     }
 
-    public Element createElement(String name) {
+    public DomElement createElement(String name) {
         if (HtmlParser.hasElementProperty(name, HtmlParser.ElementProperty.LOGICAL)) {
-            return new ElementImpl(this, name);
+            return new DomElement(this, name);
         }
         if (HtmlParser.hasElementProperty(name, HtmlParser.ElementProperty.TEXT)) {
-            return new TextElement(this, name);
+            return new DomTextElement(this, name);
         }
 
         View view;
@@ -35,31 +35,21 @@ public class DomDocument extends DomNode implements Document {
         } else {
             view = new HtmlViewGroup(htmlContext.getContext(), htmlContext);
         }
-        return new ViewElement(this, name, view);
+        return new DomViewElement(this, name, view);
     }
 
     @Override
-    public TextNode createTextNode(String text) {
-        return new TextNode(this, text);
+    public DomTextNode createTextNode(String text) {
+        return new DomTextNode(this, text);
     }
 
     @Override
-    public Node getParentNode() {
-        return null;
+    public Element getDocumentElement() {
+        Node result = getFirstChild();
+        while (result != null && !(result instanceof Element)) {
+            result = result.getNextSibling();
+        }
+        return (Element) result;
     }
 
-    @Override
-    public Element getParentElement() {
-        return null;
-    }
-
-    @Override
-    public Document getOwnerDocument() {
-        return null;
-    }
-
-    @Override
-    public Node appendChild(Node node) {
-        return null;
-    }
 }

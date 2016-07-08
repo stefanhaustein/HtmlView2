@@ -146,7 +146,7 @@ public class TableLayoutManager implements LayoutManager {
       int currentX = 0;
       for (View cell: row) {
         HtmlViewGroup.LayoutParams cellParams = (HtmlViewGroup.LayoutParams) cell.getLayoutParams();
-        VirtualElement cellElement = cellParams.element;
+        DomElement cellElement = cellParams.element;
         ColumnData columnData;
         while (true) {
           // Skip columns with remaining rowspan
@@ -212,15 +212,15 @@ public class TableLayoutManager implements LayoutManager {
 
     while (rowIterator.hasNext()) {
       CssStylableElement potentialRowElement = rowIterator.next();
-      if (potentialRowElement instanceof VirtualElement) {
-        VirtualElement row = (VirtualElement) potentialRowElement;
+      if (potentialRowElement instanceof DomElement) {
+        DomElement row = (DomElement) potentialRowElement;
         ArrayList<View> cells = new ArrayList<View>();
         rows.add(cells);
         Iterator<? extends CssStylableElement> colIterator = row.getChildElementIterator();
         while (colIterator.hasNext()) {
           CssStylableElement potentialCell = colIterator.next();
-          if (potentialCell instanceof ViewElement) {
-            cells.add(((ViewElement) potentialCell).getView());
+          if (potentialCell instanceof DomViewElement) {
+            cells.add(((DomViewElement) potentialCell).getView());
           }
         }
       }
