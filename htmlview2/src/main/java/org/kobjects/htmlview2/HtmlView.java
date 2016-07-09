@@ -43,10 +43,10 @@ public class HtmlView extends HtmlViewGroup implements Window {
   public URI baseUri;
   HvDocument document;
 
-  public HtmlView(Context androidContext, URI baseUri) {
-    super(androidContext, null);
+  public HtmlView(Context context, URI baseUri) {
+    super(context, null);
     this.baseUri = baseUri;
-    scale = androidContext.getResources().getDisplayMetrics().density;
+    scale = context.getResources().getDisplayMetrics().density;
     htmlView = this;
   }
 

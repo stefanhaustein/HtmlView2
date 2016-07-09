@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ScrollView;
 
-import org.kobjects.htmlview2.DefaultRequestHandler;
 import org.kobjects.htmlview2.HtmlView;
 import org.kobjects.htmlview2.HtmlProcessor;
 
@@ -25,8 +24,7 @@ public class MainActivity extends AppCompatActivity {
       Reader reader = new BufferedReader(
           new InputStreamReader(getAssets().open("index.html")));
 
-      HtmlView htmlView = new HtmlView(this, new DefaultRequestHandler(this),
-          new URI("file:///android_asset/"));
+      HtmlView htmlView = new HtmlView(this, new URI("file:///android_asset/"));
       htmlProcessor.parse(reader, htmlView);
 
       ScrollView scrollView = new ScrollView(this);
