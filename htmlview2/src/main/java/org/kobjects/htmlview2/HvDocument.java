@@ -9,20 +9,20 @@ import elemental.dom.Element;
 import elemental.dom.Node;
 import org.kobjects.html.HtmlParser;
 
-public class DomDocument extends DomParentNode implements Document {
+class HvDocument extends HvParentNode implements Document {
     protected final HtmlView htmlContext;
 
-    protected DomDocument(HtmlView context) {
+    protected HvDocument(HtmlView context) {
         super(null);
         this.htmlContext = context;
     }
 
-    public DomElement createElement(String name) {
+    public HvElement createElement(String name) {
         if (HtmlParser.hasElementProperty(name, HtmlParser.ElementProperty.LOGICAL)) {
-            return new DomElement(this, name);
+            return new HvElement(this, name);
         }
         if (HtmlParser.hasElementProperty(name, HtmlParser.ElementProperty.TEXT)) {
-            return new DomTextElement(this, name);
+            return new HvTextElement(this, name);
         }
 
         View view;
@@ -35,12 +35,12 @@ public class DomDocument extends DomParentNode implements Document {
         } else {
             view = new HtmlViewGroup(htmlContext.getContext(), htmlContext);
         }
-        return new DomViewElement(this, name, view);
+        return new HvViewElement(this, name, view);
     }
 
     @Override
-    public DomTextNode createTextNode(String text) {
-        return new DomTextNode(this, text);
+    public HvTextNode createTextNode(String text) {
+        return new HvTextNode(this, text);
     }
 
     @Override

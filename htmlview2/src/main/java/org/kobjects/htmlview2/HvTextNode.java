@@ -2,10 +2,10 @@ package org.kobjects.htmlview2;
 
 import elemental.dom.Text;
 
-class DomTextNode extends DomNode implements Text {
+class HvTextNode extends HvNode implements Text {
     String text;
 
-    DomTextNode(DomDocument ownerDocument, String text) {
+    HvTextNode(HvDocument ownerDocument, String text) {
         super(ownerDocument);
         this.text = text;
     }

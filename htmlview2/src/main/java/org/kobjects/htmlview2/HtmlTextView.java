@@ -17,21 +17,21 @@ public class HtmlTextView extends TextView {
 
   CssStyle style;
   SpannableStringBuilder content = new SpannableStringBuilder("");
-  HtmlView pageContext;
-  ArrayList<DomTextElement> images;
+  HtmlView htmlView;
+  ArrayList<HvTextElement> images;
   boolean hasLineBreaks = false;
   int pendingBreakPosition = -1;
 
   public HtmlTextView(HtmlView pageContext) {
     super(pageContext.getContext());
    // this.setSingleLine(false);
-    this.pageContext = pageContext;
+    this.htmlView = pageContext;
   }
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     if (images != null) {
-      for(DomTextElement image: images) {
+      for(HvTextElement image: images) {
         image.setComputedStyle(image.style);
       }
     }
@@ -78,7 +78,7 @@ public class HtmlTextView extends TextView {
   public void setComputedStyle(CssStyle style) {
     this.style = style;
     // System.out.println("applyRootStyle to '" + content + "': " + style);
-    float scale = pageContext.scale;
+    float scale = htmlView.scale;
     setTextSize(TypedValue.COMPLEX_UNIT_PX, style.get(CssProperty.FONT_SIZE, CssUnit.PX) * scale);
     setTextColor(style.getColor(CssProperty.COLOR));
     setTypeface(CssStyles.getTypeface(style), CssStyles.getTextStyle(style));

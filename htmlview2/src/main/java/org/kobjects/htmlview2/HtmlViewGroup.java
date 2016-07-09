@@ -324,7 +324,7 @@ public class HtmlViewGroup extends ViewGroup {
     int measuredY;
 
     // null for HtmlTextView
-    public DomViewElement element;
+    public HvViewElement element;
 
     public CssStyle style() {
       return element != null ? element.style : EMTPY_STYLE;

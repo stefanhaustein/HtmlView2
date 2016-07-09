@@ -32,7 +32,7 @@ public class HtmlProcessor {
   private static final String TAG = "HtmlProcessor";
   private HtmlParser parser;
   private HtmlView htmlView;
-  private DomDocument document;
+  private HvDocument document;
 
   public void parse(Reader reader, HtmlView htmlView) {
     this.htmlView = htmlView;
@@ -46,7 +46,7 @@ public class HtmlProcessor {
 
       parseContainerContent(document);
 
-      TreeSync.sync(htmlView, document);
+      TreeSync.sync(htmlView, document, true);
 
       CssStyleSheet styleSheet = htmlView.getStyleSheet();
       Node child = document.getFirstChild();
@@ -102,7 +102,7 @@ public class HtmlProcessor {
     if (elementStack.size() > 0) {
       element = document.createElement(elementStack.get(0).getLocalName());
       for (int i = 1; i < elementStack.size(); i++) {
-        DomTextElement child = (DomTextElement) htmlView.getDocument().createElement(elementStack.get(i).getLocalName());
+        HvTextElement child = (HvTextElement) htmlView.getDocument().createElement(elementStack.get(i).getLocalName());
         element.appendChild(child);
         element = child;
       }
@@ -120,7 +120,7 @@ public class HtmlProcessor {
         element = document.createElement(parser.getName());
         container.appendChild(element);
       } else {
-        DomTextElement child = (DomTextElement) htmlView.getDocument().createElement(parser.getName());
+        HvTextElement child = (HvTextElement) htmlView.getDocument().createElement(parser.getName());
         element.appendChild(child);
         element = child;
       }
@@ -142,7 +142,7 @@ public class HtmlProcessor {
       switch (parser.getEventType()) {
         case XmlPullParser.START_TAG:
           if (parser.hasElementProperty(parser.getName(), HtmlParser.ElementProperty.TEXT) || parser.getName().equals("img")) {
-            DomTextElement child = (DomTextElement) htmlView.getDocument().createElement(parser.getName());
+            HvTextElement child = (HvTextElement) htmlView.getDocument().createElement(parser.getName());
             element.appendChild(child);
             parseTextElement(child, elementStack);
           } else {
@@ -181,7 +181,7 @@ public class HtmlProcessor {
               String href = parser.getAttributeValue("href");
               if (href != null) {
                 try {
-                  htmlView.getRequestHandler().requestStyleSheet(htmlView,
+                  htmlView.requestStyleSheet(htmlView,
                       htmlView.createUri(parser.getAttributeValue("href")));
                 } catch (URISyntaxException e) {
                   Log.e(TAG, "Error resolving stylesheet URL " + href, e);
@@ -212,7 +212,7 @@ public class HtmlProcessor {
             }
             parseHtmlText(container, textElementStack);
           } else {
-            DomViewElement viewElement = (DomViewElement) htmlView.getDocument().createElement(parser.getName());
+            HvViewElement viewElement = (HvViewElement) htmlView.getDocument().createElement(parser.getName());
             for (int i = 0; i < parser.getAttributeCount(); i++) {
               viewElement.setAttribute(parser.getAttributeName(i), parser.getAttributeValue(i));
             }

@@ -2,24 +2,24 @@ package org.kobjects.htmlview2;
 
 import elemental.dom.Node;
 
-abstract class DomParentNode extends DomNode {
-    DomNode firstChild;
-    DomNode lastChild;
+abstract class HvParentNode extends HvNode {
+    HvNode firstChild;
+    HvNode lastChild;
 
-    DomParentNode(DomDocument ownerDocument) {
+    HvParentNode(HvDocument ownerDocument) {
         super(ownerDocument);
     }
 
-    public DomNode getFirstChild() {
+    public HvNode getFirstChild() {
         return firstChild;
     }
 
-    public DomNode getLastChild() {
+    public HvNode getLastChild() {
         return lastChild;
     }
 
-    public DomNode appendChild(Node node) {
-        DomNode domNode = (DomNode) node;
+    public HvNode appendChild(Node node) {
+        HvNode domNode = (HvNode) node;
         if (lastChild == null) {
             lastChild = firstChild = domNode;
         } else {

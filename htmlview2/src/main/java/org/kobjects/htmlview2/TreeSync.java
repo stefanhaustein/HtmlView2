@@ -9,31 +9,34 @@ import elemental.dom.Text;
  */
 public class TreeSync {
 
-    public static void sync(HtmlViewGroup physicalContainer, Node logicalContainer) {
+    public static void sync(HtmlViewGroup physicalContainer, Node logicalContainer, boolean clear) {
+        if (clear) {
+            physicalContainer.removeAllViews();
+        }
         HtmlTextView pendingText = null;
         Node child = logicalContainer.getFirstChild();
         while (child != null) {
-            if (child instanceof DomViewElement) {
-                View view = ((DomViewElement) child).getView();
+            if (child instanceof HvViewElement) {
+                View view = ((HvViewElement) child).getView();
                 physicalContainer.addView(view);
-                ((HtmlViewGroup.LayoutParams) view.getLayoutParams()).element = (DomViewElement) child;
+                ((HtmlViewGroup.LayoutParams) view.getLayoutParams()).element = (HvViewElement) child;
                 pendingText = null;
                 if (view instanceof HtmlViewGroup) {
-                    sync((HtmlViewGroup) view, child);
+                    sync((HtmlViewGroup) view, child, true);
                 }
-            } else if (child instanceof DomTextNode || child instanceof DomTextElement) {
+            } else if (child instanceof HvTextNode || child instanceof HvTextElement) {
                 if (pendingText == null) {
                     pendingText = new HtmlTextView(physicalContainer.htmlView);
                     physicalContainer.addView(pendingText);
                 }
-                if (child instanceof DomTextNode) {
+                if (child instanceof HvTextNode) {
                     pendingText.appendNormalized(((Text) child).getData());
                 } else {
-                    ((DomTextElement) child).sync(pendingText);
+                    ((HvTextElement) child).sync(pendingText);
                 }
-            } else if (child instanceof DomElement) {
+            } else if (child instanceof HvElement) {
                 pendingText = null;
-                sync(physicalContainer, child);
+                sync(physicalContainer, child, false);
             }
             child = child.getNextSibling();
         }

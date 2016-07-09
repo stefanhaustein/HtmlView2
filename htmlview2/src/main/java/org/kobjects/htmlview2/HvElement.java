@@ -1,19 +1,18 @@
 package org.kobjects.htmlview2;
 
 import elemental.dom.Element;
-import elemental.dom.Node;
 import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssStyle;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-public class DomElement extends DomParentNode implements Element, CssStylableElement {
+class HvElement extends HvParentNode implements Element, CssStylableElement {
   private final String name;
   LinkedHashMap<String,String> attributes = new LinkedHashMap<>();
   CssStyle style;
 
-  public DomElement(DomDocument ownerDocument, String name) {
+  public HvElement(HvDocument ownerDocument, String name) {
     super(ownerDocument);
     this.name = name;
   }
@@ -36,7 +35,7 @@ public class DomElement extends DomParentNode implements Element, CssStylableEle
   @Override
   public Iterator<? extends CssStylableElement> getChildElementIterator() {
     return new Iterator<CssStylableElement>() {
-      DomElement next = getFirstElementChild();
+      HvElement next = getFirstElementChild();
 
       @Override
       public boolean hasNext() {
@@ -45,7 +44,7 @@ public class DomElement extends DomParentNode implements Element, CssStylableEle
 
       @Override
       public CssStylableElement next() {
-        DomElement result = next;
+        HvElement result = next;
         next = next.getNextElementSibling();
         return result;
       }
@@ -53,39 +52,39 @@ public class DomElement extends DomParentNode implements Element, CssStylableEle
   }
 
   @Override
-  public DomElement getFirstElementChild() {
-    DomNode result = getFirstChild();
-    while (result != null && !(result instanceof DomElement)) {
+  public HvElement getFirstElementChild() {
+    HvNode result = getFirstChild();
+    while (result != null && !(result instanceof HvElement)) {
       result = result.getNextSibling();
     }
-    return (DomElement) result;
+    return (HvElement) result;
   }
 
   @Override
-  public DomElement getLastElementChild() {
-    DomNode result = getLastChild();
-    while (result != null && !(result instanceof DomElement)) {
+  public HvElement getLastElementChild() {
+    HvNode result = getLastChild();
+    while (result != null && !(result instanceof HvElement)) {
       result = result.getPreviousSibling();
     }
-    return (DomElement) result;
+    return (HvElement) result;
   }
 
   @Override
-  public DomElement getNextElementSibling() {
-    DomNode result = getNextSibling();
-    while (result != null && !(result instanceof DomElement)) {
+  public HvElement getNextElementSibling() {
+    HvNode result = getNextSibling();
+    while (result != null && !(result instanceof HvElement)) {
       result = result.getNextSibling();
     }
-    return (DomElement) result;
+    return (HvElement) result;
   }
 
   @Override
-  public DomElement getPreviousElementSibling() {
-    DomNode result = getPreviousSibling();
-    while (result != null && !(result instanceof DomElement)) {
+  public HvElement getPreviousElementSibling() {
+    HvNode result = getPreviousSibling();
+    while (result != null && !(result instanceof HvElement)) {
       result = result.getNextSibling();
     }
-    return (DomElement) result;
+    return (HvElement) result;
   }
 
   @Override

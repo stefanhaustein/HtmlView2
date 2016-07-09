@@ -15,16 +15,16 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 
-public class DomTextElement extends DomElement implements ImageTarget {
+class HvTextElement extends HvElement implements ImageTarget {
   private HtmlTextView htmlTextView;
   int start;// = htmlTextView.content.length();
   int end;
-  DomTextElement parent;
+  HvTextElement parent;
   CssStyle style;
   BitmapDrawable drawable;
   ArrayList<Object> spans = new ArrayList<>();
 
-  DomTextElement(DomDocument ownerDocument, String name) {
+  HvTextElement(HvDocument ownerDocument, String name) {
     super(ownerDocument, name);
   }
 
@@ -38,7 +38,7 @@ public class DomTextElement extends DomElement implements ImageTarget {
       String src = getAttribute("src");
       if (src != null) {
         try {
-          htmlTextView.pageContext.requestHandler.requestImage(this, htmlTextView.pageContext.createUri(src));
+          htmlTextView.htmlView.requestImage(this, htmlTextView.htmlView.createUri(src));
         } catch (URISyntaxException e) {
           Log.e(HtmlTextView.TAG, "Error constructing image URL from '" + src + "'", e);
         }
@@ -48,12 +48,12 @@ public class DomTextElement extends DomElement implements ImageTarget {
       htmlTextView.appendRaw("\u200b");
       htmlTextView.pendingBreakPosition = htmlTextView.content.length() - 1;
     } else {
-      DomNode child = getFirstChild();
+      HvNode child = getFirstChild();
       while (child != null) {
-        if (child instanceof DomTextNode) {
-          htmlTextView.appendNormalized(((DomTextNode) child).text);
+        if (child instanceof HvTextNode) {
+          htmlTextView.appendNormalized(((HvTextNode) child).text);
         } else {
-          ((DomTextElement) child).sync(htmlTextView);
+          ((HvTextElement) child).sync(htmlTextView);
         }
         child = child.getNextSibling();
       }
@@ -86,8 +86,8 @@ public class DomTextElement extends DomElement implements ImageTarget {
         imageHeight = style.get(CssProperty.HEIGHT, CssUnit.PX, cssContentWidth);
         imageWidth *= imageHeight / bitmap.getHeight();
       }
-      drawable.setBounds(0, 0, Math.round(imageWidth * htmlTextView.pageContext.scale),
-              Math.round(imageHeight * htmlTextView.pageContext.scale));
+      drawable.setBounds(0, 0, Math.round(imageWidth * htmlTextView.htmlView.scale),
+              Math.round(imageHeight * htmlTextView.htmlView.scale));
 
       spans.add(new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE));
     }
@@ -99,8 +99,8 @@ public class DomTextElement extends DomElement implements ImageTarget {
     if (!typefaceName.equals(CssStyles.getFontFamilyName(parentStyle))) {
       spans.add(new TypefaceSpan(typefaceName));
     }
-    int size = htmlTextView.pageContext.getTextSize(style);
-    if (size != htmlTextView.pageContext.getTextSize(parentStyle)) {
+    int size = htmlTextView.htmlView.getTextSize(style);
+    if (size != htmlTextView.htmlView.getTextSize(parentStyle)) {
       spans.add(new AbsoluteSizeSpan(size));
     }
     int color = style.getColor(CssProperty.COLOR);
@@ -135,8 +135,8 @@ public class DomTextElement extends DomElement implements ImageTarget {
         @Override
         public void onClick(View widget) {
           try {
-            htmlTextView.pageContext.requestHandler.openLink(
-                    DomTextElement.this, htmlTextView.pageContext.createUri(getAttribute("href")));
+            htmlTextView.htmlView.openLink(
+                    HvTextElement.this, htmlTextView.htmlView.createUri(getAttribute("href")));
           } catch (URISyntaxException e) {
             Log.e(HtmlTextView.TAG, "URI Syntax error", e);
           }
@@ -167,7 +167,7 @@ public class DomTextElement extends DomElement implements ImageTarget {
       }
       htmlTextView.images.add(this);
     }
-    drawable = new BitmapDrawable(htmlTextView.pageContext.getContext().getResources(), bitmap);
+    drawable = new BitmapDrawable(htmlTextView.htmlView.getContext().getResources(), bitmap);
     if (style != null) {
       setComputedStyle(style);
     }

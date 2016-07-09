@@ -4,9 +4,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import org.kobjects.css.*;
 
-/**
- * Created by haustein on 07.07.16.
- */
+
 public class CssStyles {
     static int getTextStyle(CssStyle style) {
       int flags = 0;

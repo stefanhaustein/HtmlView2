@@ -7,10 +7,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import org.kobjects.css.CssStyle;
 
-class DomViewElement extends DomElement {
+class HvViewElement extends HvElement {
     private View view;
 
-    DomViewElement(DomDocument ownerDocument, String name, View view) {
+    HvViewElement(HvDocument ownerDocument, String name, View view) {
         super(ownerDocument, name);
         this.view = view;
     }
