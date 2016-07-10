@@ -1,4 +1,4 @@
-# htmllayout
+# HtmlLayout2
 
-This may become a simplified / cleaner / "Androidified" version of HtmlView. 
-It's not really usable yet -- for now, use HtmlView.
+Cleaner, simplified and "Androidified" version of HtmlView. 
+
