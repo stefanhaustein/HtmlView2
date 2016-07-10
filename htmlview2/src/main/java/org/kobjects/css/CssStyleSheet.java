@@ -80,7 +80,7 @@ public class CssStyleSheet {
   /**
    * Properties for * rules 
    */
-  private ArrayList<CssStyle> properties;
+  private ArrayList<CssStyleDeclaration> properties;
 
   /**
    * Creates a new style sheet with default rules for HTML.
@@ -93,131 +93,131 @@ public class CssStyleSheet {
     int defaultIndent = 40;
     int defaultParagraphSpace = 12;
     
-    s.put(":link", new CssStyle()
+    s.put(":link", new CssStyleDeclaration()
         .set(CssProperty.COLOR, 0x0ff0000ff, CssUnit.ARGB)
         .setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
-    s.put("address", new CssStyle()
+    s.put("address", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("b", new CssStyle().set(CssProperty.FONT_WEIGHT, 700000, CssUnit.NUMBER));
-    CssStyle tt = new CssStyle();
+    s.put("b", new CssStyleDeclaration().set(CssProperty.FONT_WEIGHT, 700000, CssUnit.NUMBER));
+    CssStyleDeclaration tt = new CssStyleDeclaration();
     tt.fontFamily = "monospace";
     s.put("tt", tt);
-    s.put("big", new CssStyle().set(CssProperty.FONT_SIZE, 16, CssUnit.PT));
-    s.put("blockquote", new CssStyle()
+    s.put("big", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, 16, CssUnit.PT));
+    s.put("blockquote", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_RIGHT, defaultIndent, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX));
-    s.put("body", new CssStyle()
+    s.put("body", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.PADDING, defaultParagraphSpace / 2, CssUnit.PX, 0));
-    s.put("button", new CssStyle().
+    s.put("button", new CssStyleDeclaration().
         setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK).
         set(CssProperty.PADDING, 30, CssUnit.PX));
-    s.put("center", new CssStyle()
+    s.put("center", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
         .setEnum(CssProperty.TEXT_ALIGN, CssEnum.CENTER));
-    s.put("dd", new CssStyle()
+    s.put("dd", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX));
-    s.put("del", new CssStyle().setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH));
-    s.put("dir", new CssStyle()
+    s.put("del", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH));
+    s.put("dir", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX)
         .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE));
-    s.put("div", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("dl", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("dt", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("form", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
+    s.put("div", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
+    s.put("dl", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
+    s.put("dt", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
+    s.put("form", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
     for (int i = 1; i <= 6; i++) {
-      s.put("h" + i, new CssStyle()
+      s.put("h" + i, new CssStyleDeclaration()
           .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
           .set(CssProperty.FONT_WEIGHT, 700, CssUnit.NUMBER)
           .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
           .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
           .set(CssProperty.FONT_SIZE, 20 - 2 * i, CssUnit.PT));
     }
-    s.put("hr", new CssStyle()
+    s.put("hr", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .setEnum(CssProperty.BORDER_TOP_STYLE, CssEnum.SOLID)
         .set(CssProperty.BORDER_TOP_COLOR, 0x0ff888888, CssUnit.ARGB)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX));
-    CssStyle italic = new CssStyle().setEnum(CssProperty.FONT_STYLE, CssEnum.ITALIC);
+    CssStyleDeclaration italic = new CssStyleDeclaration().setEnum(CssProperty.FONT_STYLE, CssEnum.ITALIC);
     s.put("i", italic);
     s.put("em", italic);
-    s.put("img", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK));
-    s.put("input", new CssStyle()
+    s.put("img", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK));
+    s.put("input", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK));
-    s.put("ins", new CssStyle().setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
-    s.put("li", new CssStyle()
+    s.put("ins", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
+    s.put("li", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.LIST_ITEM)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX));
-    s.put("marquee", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("menu", new CssStyle()
+    s.put("marquee", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
+    s.put("menu", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK).
         set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX).
         set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX).
         set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX).
         setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE));
-    s.put("ol", new CssStyle()
+    s.put("ol", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX)
         .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.DECIMAL));
-    s.put("p", new CssStyle()
+    s.put("p", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX));
-    CssStyle pre = new CssStyle()
+    CssStyleDeclaration pre = new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .setEnum(CssProperty.WHITE_SPACE, CssEnum.PRE)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX);
     pre.fontFamily = "monospace";
     s.put("pre", pre);
-    s.put("script", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.NONE));
-    s.put("small", new CssStyle().set(CssProperty.FONT_SIZE, 9, CssUnit.PT));
-    s.put("strike", new CssStyle().setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH));
-    s.put("strong", new CssStyle()
-        .set(CssProperty.FONT_WEIGHT, CssStyle.FONT_WEIGHT_BOLD, CssUnit.NUMBER));
-    s.put("style", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.NONE));
+    s.put("script", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.NONE));
+    s.put("small", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, 9, CssUnit.PT));
+    s.put("strike", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH));
+    s.put("strong", new CssStyleDeclaration()
+        .set(CssProperty.FONT_WEIGHT, CssStyleDeclaration.FONT_WEIGHT_BOLD, CssUnit.NUMBER));
+    s.put("style", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.NONE));
 
-    s.put("sup", new CssStyle()
+    s.put("sup", new CssStyleDeclaration()
         .set(CssProperty.FONT_SIZE, 9, CssUnit.PT)
         .setEnum(CssProperty.VERTICAL_ALIGN, CssEnum.SUPER));
-    s.put("sub", new CssStyle()
+    s.put("sub", new CssStyleDeclaration()
         .set(CssProperty.FONT_SIZE, 9, CssUnit.PT)
         .setEnum(CssProperty.VERTICAL_ALIGN, CssEnum.SUB));
 
-    s.put("table", new CssStyle()
+    s.put("table", new CssStyleDeclaration()
         .set(CssProperty.BORDER_SPACING, 2, CssUnit.PX)
         .setEnum(CssProperty.DISPLAY, CssEnum.TABLE)
         .setEnum(CssProperty.CLEAR, CssEnum.BOTH));
-    s.put("td", new CssStyle()
+    s.put("td", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.TABLE_CELL)
         .set(CssProperty.PADDING, 10, CssUnit.PX)
         .setEnum(CssProperty.BORDER_STYLE, CssEnum.SOLID)
         .setEnum(CssProperty.TEXT_ALIGN, CssEnum.LEFT));
-    s.put("th", new CssStyle()
+    s.put("th", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.TABLE_CELL)
         .set(CssProperty.FONT_WEIGHT, 700, CssUnit.NUMBER)
         .set(CssProperty.PADDING, 10, CssUnit.PX)
         .setEnum(CssProperty.BORDER_STYLE, CssEnum.SOLID)
         .setEnum(CssProperty.TEXT_ALIGN, CssEnum.CENTER));
-    s.put("tr", new CssStyle().setEnum(CssProperty.DISPLAY, CssEnum.TABLE_ROW));
-    s.put("u", new CssStyle().setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
-    s.put("ul", new CssStyle()
+    s.put("tr", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.TABLE_ROW));
+    s.put("u", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
+    s.put("ul", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX)
         .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE));
-    s.put("ul ul", new CssStyle().setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.CIRCLE));
-    s.put("ul ul ul", new CssStyle().setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.DISC));
+    s.put("ul ul", new CssStyleDeclaration().setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.CIRCLE));
+    s.put("ul ul ul", new CssStyleDeclaration().setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.DISC));
     return s;
   }
 
@@ -303,14 +303,14 @@ public class CssStyleSheet {
         ct.nextToken(false);
       } else {
         // no @keyword or } -> regular selector
-        ArrayList<CssStyle> targets = new ArrayList<CssStyle>();
+        ArrayList<CssStyleDeclaration> targets = new ArrayList<CssStyleDeclaration>();
         targets.add(parseSelector(ct));
         while (ct.ttype == ',') {
           ct.nextToken(false);
           targets.add(parseSelector(ct));
         }
 
-        CssStyle style = new CssStyle();
+        CssStyleDeclaration style = new CssStyleDeclaration();
         if (ct.ttype == '{') {
           ct.nextToken(false);
           style.read(ct);
@@ -320,7 +320,7 @@ public class CssStyleSheet {
         }
 
         for (int i = 0; i < targets.size(); i++) {
-          CssStyle target = targets.get(i);
+          CssStyleDeclaration target = targets.get(i);
           if (target == null) {
             continue;
           }
@@ -346,7 +346,7 @@ public class CssStyleSheet {
    * @return the node at the end of the tree path denoted by this selector,
    *         where the corresponding CSS properties will be stored
    */
-  private CssStyle parseSelector(CssTokenizer ct) {
+  private CssStyleDeclaration parseSelector(CssTokenizer ct) {
 
     boolean error = false;
     
@@ -476,10 +476,10 @@ public class CssStyleSheet {
       return null;
     }
 
-    CssStyle style = new CssStyle();
+    CssStyleDeclaration style = new CssStyleDeclaration();
     style.specificity = specificity;
     if (result.properties == null) {
-      result.properties = new ArrayList<CssStyle>();
+      result.properties = new ArrayList<CssStyleDeclaration>();
     }
     result.properties.add(style);
     
@@ -535,7 +535,7 @@ public class CssStyleSheet {
    * @param queue queue of matching rules to be processed further
    */
   private static void collectStyles(CssStylableElement element, Map<String, CssStyleSheet> map, String key,
-                                    List<CssStyle> queue, List<CssStyleSheet> children, List<CssStyleSheet> descendants) {
+                                    List<CssStyleDeclaration> queue, List<CssStyleSheet> children, List<CssStyleSheet> descendants) {
     if (key == null || map == null) {
       return;
     }
@@ -549,17 +549,17 @@ public class CssStyleSheet {
    * Performs a depth first search of all matching selectors and enqueues the
    * corresponding style information.
    */
-  public void collectStyles(CssStylableElement element, List<CssStyle> queue,
+  public void collectStyles(CssStylableElement element, List<CssStyleDeclaration> queue,
                             List<CssStyleSheet> children, List<CssStyleSheet> descendants) {
     
     if (properties != null) {
       // enqueue the style at the current node according to its specificity
 
       for (int i = 0; i < properties.size(); i++) {
-        CssStyle p = properties.get(i);
+        CssStyleDeclaration p = properties.get(i);
         int index = queue.size();
         while (index > 0) {
-          CssStyle s = queue.get(index - 1);
+          CssStyleDeclaration s = queue.get(index - 1);
           if (s.compareSpecificity(p) < 0) {
             break;
           }
@@ -599,7 +599,7 @@ public class CssStyleSheet {
     }
 
     if (selectElementName != null) {
-      collectStyles(element, selectElementName, element.getName(), queue, children, descendants);
+      collectStyles(element, selectElementName, element.getLocalName(), queue, children, descendants);
     }
 
     if (selectChild != null) {
@@ -621,7 +621,7 @@ public class CssStyleSheet {
    * @param selector element name
    * @param style default style for the element
    */
-  private void put(String selector, CssStyle style) {
+  private void put(String selector, CssStyleDeclaration style) {
     if (selectElementName == null) {
       selectElementName = new HashMap<String, CssStyleSheet>();
     }
@@ -637,13 +637,13 @@ public class CssStyleSheet {
 
     if (simple) {
       CssStyleSheet s = new CssStyleSheet();
-      s.properties = new ArrayList<CssStyle>();
+      s.properties = new ArrayList<CssStyleDeclaration>();
       s.properties.add(style);
       style.specificity = Css.SPECIFICITY_D - Css.SPECIFICITY_IMPORTANT;
       selectElementName.put(selector, s);
     } else {
       CssTokenizer ct = new CssTokenizer(null, selector + "{");
-      CssStyle target = parseSelector(ct);
+      CssStyleDeclaration target = parseSelector(ct);
       target.setFrom(style);
       // copy important
       target.specificity += style.specificity - Css.SPECIFICITY_IMPORTANT;
@@ -727,11 +727,11 @@ public class CssStyleSheet {
    * applied, the inheritance rules and finally the style attribute are taken 
    * into account.
    */
-  private static void apply(CssStylableElement element, URI baseUri, CssStyle inherit,
+  private static void apply(CssStylableElement element, URI baseUri, CssStyleDeclaration inherit,
                             List<CssStyleSheet> applyHere, List<CssStyleSheet> applyAnywhere) {
-    CssStyle style = new CssStyle();
+    CssStyleDeclaration style = new CssStyleDeclaration();
 
-    ArrayList<CssStyle> queue = new ArrayList<>();
+    ArrayList<CssStyleDeclaration> queue = new ArrayList<>();
     ArrayList<CssStyleSheet> childStyles = new ArrayList<>();
     ArrayList<CssStyleSheet> descendantStyles = new ArrayList<>();
   
@@ -751,10 +751,7 @@ public class CssStyleSheet {
       style.setFrom((queue.get(i)));
     }
   
-    String styleAttr = element.getAttribute("style");
-    if (styleAttr != null) {
-      style.read(baseUri, styleAttr);
-    }
+    style.setFrom(element.getStyle());
   
     if (inherit != null) {
       style.inherit(inherit);

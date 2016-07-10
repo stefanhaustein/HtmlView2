@@ -1,15 +1,16 @@
 package elemental.dom;
 
 public interface Node {
-    Node getParentNode();
-    Element getParentElement();
-    Document getOwnerDocument();
+  Node getParentNode();
+  Element getParentElement();
+  Document getOwnerDocument();
 
-    Node getFirstChild();
-    Node getLastChild();
-    Node getNextSibling();
-    Node getPreviousSibling();
+  Node getFirstChild();
+  Node getLastChild();
+  Node getNextSibling();
+  Node getPreviousSibling();
 
-    Node appendChild(Node node);
+  Node appendChild(Node node);
 
+  String getTextContent();
 }

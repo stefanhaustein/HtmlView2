@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 
 import org.kobjects.css.CssEnum;
 import org.kobjects.css.CssProperty;
-import org.kobjects.css.CssStyle;
+import org.kobjects.css.CssStyleDeclaration;
 import org.kobjects.css.CssUnit;
 
 
 public class HtmlViewGroup extends ViewGroup {
-  private static final CssStyle EMTPY_STYLE = new CssStyle();
+  private static final CssStyleDeclaration EMTPY_STYLE = new CssStyleDeclaration();
 
   private Paint borderPaint = new Paint();
   private Paint bulletPaint;
@@ -25,13 +25,15 @@ public class HtmlViewGroup extends ViewGroup {
   // Set in onMeasure
   int cssContentWidth;
   HtmlView htmlView;
+  HvDomContainer node;
 
   static final LayoutManager BLOCK_LAYOUT_MANAGER = new BlockLayoutManager();
   static final LayoutManager TABLE_LAYOUT_MANAGER = new TableLayoutManager();
 
-  public HtmlViewGroup(Context context, HtmlView htmlView) {
+  public HtmlViewGroup(Context context, HtmlView htmlView, HvDomContainer node) {
     super(context);
     this.htmlView = htmlView;
+    this.node = node;
     setWillNotDraw(false);
     setClipChildren(false);
   }
@@ -45,7 +47,7 @@ public class HtmlViewGroup extends ViewGroup {
 
     Bitmap img = layoutParams.getBackgroundBitmap();
     if (img != null) {
-      CssStyle style = layoutParams.style();
+      CssStyleDeclaration style = layoutParams.style();
       Rect clipBounds = new Rect();
       canvas.getClipBounds(clipBounds);
       canvas.save();
@@ -88,7 +90,7 @@ public class HtmlViewGroup extends ViewGroup {
       return;
     }
     LayoutParams childParams = (LayoutParams) getChildAt(index).getLayoutParams();
-    CssStyle style = childParams.style();
+    CssStyleDeclaration style = childParams.style();
 
     int x0 = child.getLeft() - childParams.getPaddingLeft();
     int y0 = child.getTop() - childParams.getPaddingTop();
@@ -166,7 +168,7 @@ public class HtmlViewGroup extends ViewGroup {
     return (LayoutParams) getChildAt(i).getLayoutParams();
   }
 
-  CssStyle getStyle() {
+  CssStyleDeclaration getStyle() {
     ViewGroup.LayoutParams params = getLayoutParams();
     return (params instanceof LayoutParams) ? ((LayoutParams) params).style() : EMTPY_STYLE;
   }
@@ -178,7 +180,7 @@ public class HtmlViewGroup extends ViewGroup {
     int listIndex = 1;
     for (int i = 0; i < getChildCount(); i++) {
       drawChildDecoration(canvas, i);
-      CssStyle childStyle = getChildLayoutParams(i).style();
+      CssStyleDeclaration childStyle = getChildLayoutParams(i).style();
       if (childStyle.getEnum(CssProperty.DISPLAY) == CssEnum.LIST_ITEM &&
           listStyleType != CssEnum.NONE) {
         String bullet;
@@ -219,6 +221,10 @@ public class HtmlViewGroup extends ViewGroup {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    if (node.syncState != HvDomContainer.SyncState.SYNCED) {
+      TreeSync.syncContainer(this, node, true);
+    }
+
     int width = MeasureSpec.getSize(widthMeasureSpec);
 
     cssContentWidth = Math.round(width / htmlView.scale);
@@ -237,7 +243,7 @@ public class HtmlViewGroup extends ViewGroup {
     int dy = 0;
     for (int i = 0; i < getChildCount(); i++) {
       LayoutParams childParams = getChildLayoutParams(i);
-      CssStyle childStyle = childParams.style();
+      CssStyleDeclaration childStyle = childParams.style();
       if (!childStyle.isBlock() ||
           childStyle.getEnum(CssProperty.POSITION) != CssEnum.ABSOLUTE) {
         continue;
@@ -263,7 +269,7 @@ public class HtmlViewGroup extends ViewGroup {
   void onMeasureAbsolute(HtmlViewGroup container, int i, int dx, int dy) {
     View child = getChildAt(i);
     HtmlViewGroup.LayoutParams childParams = (HtmlViewGroup.LayoutParams) child.getLayoutParams();
-    CssStyle childStyle = childParams.style();
+    CssStyleDeclaration childStyle = childParams.style();
 
     int containerWidth = Math.round(container.cssContentWidth * htmlView.scale);
 
@@ -295,9 +301,9 @@ public class HtmlViewGroup extends ViewGroup {
     int measuredY;
     if (childStyle.isSet(CssProperty.TOP)) {
       measuredY = childTop + Math.round(htmlView.scale * childStyle.get(CssProperty.TOP, CssUnit.PX, container.cssContentWidth));
-  //  } else if (childParams.style.isSet(CssProperty.BOTTOM)) {
+  //  } else if (childParams.computedStyle.isSet(CssProperty.BOTTOM)) {
       // TODO
-      // measuredY = container.getMeasuredHeight() - child.getMeasuredHeight() - childBottom - Math.round(htmlContext.scale * (childParams.style.get(CssProperty.BOTTOM, CssUnit.PX, container.cssContentWidth)));
+      // measuredY = container.getMeasuredHeight() - child.getMeasuredHeight() - childBottom - Math.round(htmlContext.scale * (childParams.computedStyle.get(CssProperty.BOTTOM, CssUnit.PX, container.cssContentWidth)));
     } else {
       measuredY = childTop;
     }
@@ -314,7 +320,7 @@ public class HtmlViewGroup extends ViewGroup {
   }
 
   public boolean isRegularLayout(int i) {
-    CssStyle style = getChildLayoutParams(i).style();
+    CssStyleDeclaration style = getChildLayoutParams(i).style();
     return style.getEnum(CssProperty.DISPLAY) != CssEnum.NONE &&
         (!style.isBlock() || style.getEnum(CssProperty.POSITION) != CssEnum.ABSOLUTE);
   }
@@ -324,13 +330,13 @@ public class HtmlViewGroup extends ViewGroup {
     int measuredY;
 
     // null for HtmlTextView
-    public HvViewElement element;
+    public HvDomElement element;
 
-    public CssStyle style() {
-      return element != null ? element.style : EMTPY_STYLE;
+    public CssStyleDeclaration style() {
+      return element != null ? element.computedStyle : EMTPY_STYLE;
     }
 
-   // public CssStyle style = new CssStyle();
+   // public CssStyleDeclaration computedStyle = new CssStyleDeclaration();
     private Paint backgroundCache;
 
     public LayoutParams() {

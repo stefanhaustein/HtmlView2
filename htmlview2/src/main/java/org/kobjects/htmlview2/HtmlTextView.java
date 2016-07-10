@@ -6,7 +6,7 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 import org.kobjects.css.CssProperty;
-import org.kobjects.css.CssStyle;
+import org.kobjects.css.CssStyleDeclaration;
 import org.kobjects.css.CssUnit;
 
 import java.util.ArrayList;
@@ -15,10 +15,10 @@ import java.util.ArrayList;
 public class HtmlTextView extends TextView {
   static final String TAG = "HtmlTextView";
 
-  CssStyle style;
+  CssStyleDeclaration computedStyle;
   SpannableStringBuilder content = new SpannableStringBuilder("");
   HtmlView htmlView;
-  ArrayList<HvTextElement> images;
+  ArrayList<SpanCollection> images;
   boolean hasLineBreaks = false;
   int pendingBreakPosition = -1;
 
@@ -31,13 +31,14 @@ public class HtmlTextView extends TextView {
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     if (images != null) {
-      for(HvTextElement image: images) {
-        image.setComputedStyle(image.style);
+      for(SpanCollection image: images) {
+        image.updateStyle();
       }
     }
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
   }
 
+  /*
   void appendNormalized(String text) {
     // System.out.println("AppendText '" + text + "' to '" + getText() + "'");
 
@@ -62,9 +63,9 @@ public class HtmlTextView extends TextView {
     }
     content.append(sb);
     setText(content);
-  }
+  }*/
 
-  void appendRaw(String text) {
+  void append(String text) {
     if (pendingBreakPosition != -1) {
       content.replace(pendingBreakPosition, pendingBreakPosition + 1, "\n");
       pendingBreakPosition = -1;
@@ -75,15 +76,15 @@ public class HtmlTextView extends TextView {
   }
 
 
-  public void setComputedStyle(CssStyle style) {
-    this.style = style;
-    // System.out.println("applyRootStyle to '" + content + "': " + style);
+  public void setComputedStyle(CssStyleDeclaration computedStyle) {
+    this.computedStyle = computedStyle;
+    // System.out.println("applyRootStyle to '" + content + "': " + computedStyle);
     float scale = htmlView.scale;
-    setTextSize(TypedValue.COMPLEX_UNIT_PX, style.get(CssProperty.FONT_SIZE, CssUnit.PX) * scale);
-    setTextColor(style.getColor(CssProperty.COLOR));
-    setTypeface(CssStyles.getTypeface(style), CssStyles.getTextStyle(style));
-    setPaintFlags((getPaintFlags() & HtmlView.PAINT_MASK) | CssStyles.getPaintFlags(style));
-    switch (style.getEnum(CssProperty.TEXT_ALIGN)) {
+    setTextSize(TypedValue.COMPLEX_UNIT_PX, this.computedStyle.get(CssProperty.FONT_SIZE, CssUnit.PX) * scale);
+    setTextColor(this.computedStyle.getColor(CssProperty.COLOR));
+    setTypeface(CssConversion.getTypeface(this.computedStyle), CssConversion.getTextStyle(this.computedStyle));
+    setPaintFlags((getPaintFlags() & HtmlView.PAINT_MASK) | CssConversion.getPaintFlags(this.computedStyle));
+    switch (this.computedStyle.getEnum(CssProperty.TEXT_ALIGN)) {
       case RIGHT:
         setGravity(Gravity.RIGHT);
         break;

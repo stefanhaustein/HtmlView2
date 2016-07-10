@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
       Reader reader = new BufferedReader(
           new InputStreamReader(getAssets().open("index.html")));
 
-      HtmlView htmlView = new HtmlView(this, new URI("file:///android_asset/"));
+      HtmlView htmlView = new HtmlView(this);
       htmlProcessor.parse(reader, htmlView);
 
       ScrollView scrollView = new ScrollView(this);

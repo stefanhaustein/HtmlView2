@@ -5,8 +5,8 @@ import android.graphics.Typeface;
 import org.kobjects.css.*;
 
 
-public class CssStyles {
-    static int getTextStyle(CssStyle style) {
+class CssConversion {
+    static int getTextStyle(CssStyleDeclaration style) {
       int flags = 0;
       if (style.get(CssProperty.FONT_WEIGHT, CssUnit.NUMBER) > 600) {
         flags |= Typeface.BOLD;
@@ -17,7 +17,7 @@ public class CssStyles {
       return flags;
     }
 
-    static Typeface getTypeface(CssStyle style) {
+    static Typeface getTypeface(CssStyleDeclaration style) {
       int flags = getTextStyle(style);
       if (!style.isSet(CssProperty.FONT_FAMILY)) {
         return Typeface.defaultFromStyle(flags);
@@ -25,7 +25,7 @@ public class CssStyles {
       return Typeface.create(getFontFamilyName(style), flags);
     }
 
-    static int getPaintFlags(CssStyle style) {
+    static int getPaintFlags(CssStyleDeclaration style) {
       switch (style.getEnum(CssProperty.TEXT_DECORATION)) {
         case UNDERLINE:
           return Paint.UNDERLINE_TEXT_FLAG;
@@ -36,7 +36,7 @@ public class CssStyles {
       }
     }
 
-    static String getFontFamilyName(CssStyle style) {
+    static String getFontFamilyName(CssStyleDeclaration style) {
       if (!style.isSet(CssProperty.FONT_FAMILY)) {
         return "";
       }

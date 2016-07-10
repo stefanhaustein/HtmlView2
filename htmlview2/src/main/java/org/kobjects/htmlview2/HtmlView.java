@@ -14,7 +14,7 @@ import android.util.Log;
 import elemental.dom.Element;
 import elemental.html.Window;
 import org.kobjects.css.CssProperty;
-import org.kobjects.css.CssStyle;
+import org.kobjects.css.CssStyleDeclaration;
 import org.kobjects.css.CssStyleSheet;
 import org.kobjects.css.CssUnit;
 
@@ -41,33 +41,38 @@ public class HtmlView extends HtmlViewGroup implements Window {
   final CssStyleSheet styleSheet = CssStyleSheet.createDefault();
   float scale;
   public URI baseUri;
-  HvDocument document;
+  HvDomDocument document;
 
-  public HtmlView(Context context, URI baseUri) {
-    super(context, null);
-    this.baseUri = baseUri;
+  public HtmlView(Context context) {
+    super(context, null, null);
     scale = context.getResources().getDisplayMetrics().density;
     htmlView = this;
+    node = getDocument();
+    try {
+      baseUri = new URI(ASSET_BASE_URL);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  int getTextSize(CssStyle style) {
+  int getTextSize(CssStyleDeclaration style) {
     return Math.round(scale * style.get(CssProperty.FONT_SIZE, CssUnit.PX));
   }
 
 
-  void setPaint(CssStyle style, Paint paint) {
+  void setPaint(CssStyleDeclaration style, Paint paint) {
     paint.setTextSize(getTextSize(style));
-    paint.setTypeface(CssStyles.getTypeface(style));
-    paint.setFlags((paint.getFlags() & PAINT_MASK) | CssStyles.getPaintFlags(style));
+    paint.setTypeface(CssConversion.getTypeface(style));
+    paint.setFlags((paint.getFlags() & PAINT_MASK) | CssConversion.getPaintFlags(style));
   }
 
   public URI createUri(String uri) throws URISyntaxException {
     return baseUri.resolve(uri);
   }
 
-  public HvDocument getDocument() {
+  public HvDomDocument getDocument() {
     if (document == null) {
-      document = new HvDocument(this);
+      document = new HvDomDocument(this);
     }
     return document;
   }

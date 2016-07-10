@@ -14,10 +14,12 @@
 
 package org.kobjects.css;
 
+import elemental.css.CSSStyleDeclaration;
+
 import java.net.URI;
 import java.util.LinkedHashMap;
 
-public class CssStyle {
+public class CssStyleDeclaration implements CSSStyleDeclaration {
   /**
    * CSS DPI constant.
    */
@@ -28,8 +30,8 @@ public class CssStyle {
 
   private static final int[] TOP_LEVEL = new int[0];
 
-  private static final CssStyle EMPTY_STYLE = new CssStyle();
-  private static final String TAG = "CssStyle";
+  private static final CssStyleDeclaration EMPTY_STYLE = new CssStyleDeclaration();
+  private static final String TAG = "CssStyleDeclaration";
 
   // values() has to create a defensive copy each time, so we cache them here.
   private static final CssUnit[] CSS_UNITS = CssUnit.values();
@@ -76,7 +78,7 @@ public class CssStyle {
   /**
    * Compares the specificity of this style to s2 and returns the difference.
    */
-  public int compareSpecificity(CssStyle s2) {
+  public int compareSpecificity(CssStyleDeclaration s2) {
     if (specificity > s2.specificity) {
       return 1;
     } else if (specificity < s2.specificity) {
@@ -208,7 +210,7 @@ public class CssStyle {
           }
         } else {
           value = 0;
-          System.err.println("CssStyle: Can't convert enum " + value + " to " + requestUnit + " for " + property);
+          System.err.println("CssStyleDeclaration: Can't convert enum " + value + " to " + requestUnit + " for " + property);
         }
         break;
       case EM:
@@ -234,7 +236,7 @@ public class CssStyle {
         break;
       default:
         value = 0;
-        System.err.println("CssStyle: Can't convert enum " + value + " to " + requestUnit + " for " + property);
+        System.err.println("CssStyleDeclaration: Can't convert enum " + value + " to " + requestUnit + " for " + property);
     }
 
     // Convert value in PX to requested unit.
@@ -368,7 +370,7 @@ public class CssStyle {
    *
    * @param from the style to inherit from
    */
-  public void inherit(CssStyle from) {
+  public void inherit(CssStyleDeclaration from) {
     if (from == null) {
       from = EMPTY_STYLE;
     }
@@ -531,7 +533,7 @@ public class CssStyle {
   }
 
 
-  public void setFrom(CssStyle from) {
+  public void setFrom(CssStyleDeclaration from) {
     if (from.values != null) {
       for (int i = 0; i < from.values.length; i++) {
         CssProperty property = CSS_PROPERTIES[i];
@@ -550,7 +552,7 @@ public class CssStyle {
   }
 
 
-  public CssStyle set(CssProperty property, float value, CssUnit unit) {
+  public CssStyleDeclaration set(CssProperty property, float value, CssUnit unit) {
     int id = property.ordinal();
     if (id >= CssProperty.REGULAR_PROPERTY_COUNT) {
       // Multivalue / special property: default to 0.
@@ -573,7 +575,7 @@ public class CssStyle {
     return this;
   }
 
-  public CssStyle set(CssProperty property, float value, CssUnit unit, int multivaluePos) {
+  public CssStyleDeclaration set(CssProperty property, float value, CssUnit unit, int multivaluePos) {
     if (property == null) {
       return this;
     }
@@ -705,7 +707,7 @@ public class CssStyle {
   }
 
 
-  public CssStyle setEnum(CssProperty property, CssEnum value) {
+  public CssStyleDeclaration setEnum(CssProperty property, CssEnum value) {
     return set(property, value.ordinal(), CssUnit.ENUM);
   }
 
@@ -728,5 +730,15 @@ public class CssStyle {
       }
     }
     sb.append("/* specifity: " + specificity + " */\n");
+  }
+
+  @Override
+  public String getPropertyValue(String name) {
+    throw new RuntimeException("NYI");
+  }
+
+  @Override
+  public void setProperty(String name, String value) {
+    throw new RuntimeException("NYI");
   }
 }

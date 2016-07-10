@@ -4,9 +4,9 @@ import android.view.View;
 
 import org.kobjects.css.CssProperty;
 import org.kobjects.css.CssEnum;
-import org.kobjects.css.CssStyle;
+import org.kobjects.css.CssStyleDeclaration;
 
-public class BlockLayoutManager implements LayoutManager {
+class BlockLayoutManager implements LayoutManager {
 
   void adjustLastLine(HtmlViewGroup htmlLayout, int firstChildIndex, int to, int usedSpace, int availableSpace) {
     if (!(htmlLayout.getLayoutParams() instanceof HtmlViewGroup.LayoutParams)) {
@@ -54,7 +54,7 @@ public class BlockLayoutManager implements LayoutManager {
 
       View child = htmlLayout.getChildAt(i);
       HtmlViewGroup.LayoutParams childParams = (HtmlViewGroup.LayoutParams) child.getLayoutParams();
-      CssStyle childStyle = childParams.style();
+      CssStyleDeclaration childStyle = childParams.style();
 
       int childLeft = childParams.getMarginLeft() + childParams.getBorderLeft() + childParams.getPaddingLeft();
       int childRight = childParams.getMarginRight() + childParams.getBorderRight() + childParams.getPaddingRight();

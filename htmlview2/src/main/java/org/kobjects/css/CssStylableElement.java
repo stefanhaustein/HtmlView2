@@ -6,9 +6,10 @@ public interface CssStylableElement {
 
   String getAttribute(String name);
 
-  String getName();
+  String getLocalName();
 
   Iterator<? extends CssStylableElement> getChildElementIterator();
   
-  void setComputedStyle(CssStyle style);
+  void setComputedStyle(CssStyleDeclaration style);
+  CssStyleDeclaration getStyle();
 }
