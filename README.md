@@ -1,6 +1,6 @@
 # HtmlLayout2
 
-Cleaner, simplified and "Androidified" version of HtmlView.
+Cleaner, simplified and "Androidified" version of HtmlView under development (should be ready for beta trials).
 
 - Text styling replaced with Android spans.
 - Layouts are now orthogonal to the view hierarchy (opposed to subclassing in HtmlView).
