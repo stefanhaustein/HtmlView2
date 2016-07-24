@@ -1,4 +1,4 @@
-# HtmlLayout2
+# HtmlView2
 
 Cleaner, simplified and "Androidified" version of HtmlView.
 
