@@ -1,4 +1,4 @@
-package elemental.dom;
+package org.kobjects.dom;
 
 public interface Node {
   Node getParentNode();

@@ -25,12 +25,12 @@ public class HtmlViewGroup extends ViewGroup {
   // Set in onMeasure
   int cssContentWidth;
   HtmlView htmlView;
-  HvDomContainer node;
+  Hv2DomContainer node;
 
   static final LayoutManager BLOCK_LAYOUT_MANAGER = new BlockLayoutManager();
   static final LayoutManager TABLE_LAYOUT_MANAGER = new TableLayoutManager();
 
-  public HtmlViewGroup(Context context, HtmlView htmlView, HvDomContainer node) {
+  public HtmlViewGroup(Context context, HtmlView htmlView, Hv2DomContainer node) {
     super(context);
     this.htmlView = htmlView;
     this.node = node;
@@ -221,7 +221,7 @@ public class HtmlViewGroup extends ViewGroup {
 
   @Override
   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    if (node.syncState != HvDomContainer.SyncState.SYNCED) {
+    if (node.syncState != Hv2DomContainer.SyncState.SYNCED) {
       TreeSync.syncContainer(this, node, true);
     }
 
@@ -330,7 +330,7 @@ public class HtmlViewGroup extends ViewGroup {
     int measuredY;
 
     // null for HtmlTextView
-    public HvDomElement element;
+    public Hv2DomElement element;
 
     public CssStyleDeclaration style() {
       return element != null ? element.computedStyle : EMTPY_STYLE;

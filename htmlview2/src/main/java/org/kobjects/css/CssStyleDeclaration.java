@@ -14,7 +14,7 @@
 
 package org.kobjects.css;
 
-import elemental.css.CSSStyleDeclaration;
+import org.kobjects.dom.CSSStyleDeclaration;
 
 import java.net.URI;
 import java.util.LinkedHashMap;

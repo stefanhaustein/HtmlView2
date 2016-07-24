@@ -4,8 +4,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import elemental.dom.Node;
-import elemental.dom.Text;
+import org.kobjects.dom.Node;
+import org.kobjects.dom.Text;
 
 import java.net.URISyntaxException;
 
@@ -14,11 +14,11 @@ import java.net.URISyntaxException;
  */
 class TreeSync {
 
-  static void syncContainer(HtmlViewGroup physicalContainer, HvDomContainer logicalContainer, boolean clear) {
-    if (logicalContainer.syncState == HvDomContainer.SyncState.SYNCED) {
+  static void syncContainer(HtmlViewGroup physicalContainer, Hv2DomContainer logicalContainer, boolean clear) {
+    if (logicalContainer.syncState == Hv2DomContainer.SyncState.SYNCED) {
       return;
     }
-    logicalContainer.syncState = HvDomContainer.SyncState.SYNCED;
+    logicalContainer.syncState = Hv2DomContainer.SyncState.SYNCED;
     if (clear) {
       physicalContainer.removeAllViews();
     }
@@ -32,22 +32,22 @@ class TreeSync {
 
   static HtmlTextView syncChild(HtmlViewGroup physicalContainer, Node childNode, HtmlTextView pendingText) {
     if (childNode instanceof Text) {
-      HvDomText text = (HvDomText) childNode;
+      Hv2DomText text = (Hv2DomText) childNode;
       if (pendingText == null) {
         pendingText = new HtmlTextView(physicalContainer.htmlView);
         physicalContainer.addView(pendingText);
       }
       pendingText.append(text.getData());
     } else {
-      HvDomElement element = (HvDomElement) childNode;
-      switch (((HvDomContainer) childNode).componentType) {
+      Hv2DomElement element = (Hv2DomElement) childNode;
+      switch (((Hv2DomContainer) childNode).componentType) {
         case IMAGE:  // TODO: We may want to treat images as leaf component here (opposed to inside syncTextElement)
         case TEXT: {
           if (pendingText == null) {
             pendingText = new HtmlTextView(physicalContainer.htmlView);
             physicalContainer.addView(pendingText);
           }
-          pendingText = syncTextElement(((HvDomElement) childNode), physicalContainer, pendingText);
+          pendingText = syncTextElement(((Hv2DomElement) childNode), physicalContainer, pendingText);
           break;
         }
         case LOGICAL_CONTAINER:
@@ -79,12 +79,12 @@ class TreeSync {
   }
 
 
-  static void syncSelect(Spinner spinner, HvDomElement element) {
+  static void syncSelect(Spinner spinner, Hv2DomElement element) {
     ArrayAdapter<String> options = new ArrayAdapter<String>(spinner.getContext(),
         android.R.layout.simple_spinner_dropdown_item);
     spinner.setAdapter(options);
 
-    HvDomElement child = element.getFirstElementChild();
+    Hv2DomElement child = element.getFirstElementChild();
     while (child != null) {
       if (child.getLocalName().equals("option")) {
         boolean selected = child.getAttribute("selected") != null;
@@ -99,7 +99,7 @@ class TreeSync {
   }
 
 
-  static HtmlTextView syncTextElement(HvDomElement element, HtmlViewGroup physicalContainer, HtmlTextView htmlTextView) {
+  static HtmlTextView syncTextElement(Hv2DomElement element, HtmlViewGroup physicalContainer, HtmlTextView htmlTextView) {
     element.sections = new SpanCollection(element, htmlTextView);
 
     if (element.getLocalName().equals("img")) {
@@ -117,16 +117,16 @@ class TreeSync {
       htmlTextView.append("\u200b");
       htmlTextView.pendingBreakPosition = htmlTextView.content.length() - 1;
     } else {
-      HvDomNode child = element.getFirstChild();
+      Hv2DomNode child = element.getFirstChild();
       while (child != null) {
-        if (child instanceof HvDomText) {
-          htmlTextView.append(((HvDomText) child).text);
+        if (child instanceof Hv2DomText) {
+          htmlTextView.append(((Hv2DomText) child).text);
         } else {
-            HvDomElement childElement = (HvDomElement) child;
-            if (childElement.componentType == HvDomContainer.ComponentType.TEXT ||
-                childElement.componentType == HvDomContainer.ComponentType.IMAGE ||
-                childElement.componentType == HvDomContainer.ComponentType.LOGICAL_CONTAINER) {
-              syncTextElement(((HvDomElement) child), physicalContainer, htmlTextView);
+            Hv2DomElement childElement = (Hv2DomElement) child;
+            if (childElement.componentType == Hv2DomContainer.ComponentType.TEXT ||
+                childElement.componentType == Hv2DomContainer.ComponentType.IMAGE ||
+                childElement.componentType == Hv2DomContainer.ComponentType.LOGICAL_CONTAINER) {
+              syncTextElement(((Hv2DomElement) child), physicalContainer, htmlTextView);
             } else {
               // Physical container or leaf component.
               syncChild(physicalContainer, child, null);
@@ -141,13 +141,13 @@ class TreeSync {
     return htmlTextView;
   }
 
-  static void reopenText(HvDomElement element, HtmlTextView htmlTextView) {
+  static void reopenText(Hv2DomElement element, HtmlTextView htmlTextView) {
     element.sections.end = element.sections.htmlTextView.content.length();
     SpanCollection next = new SpanCollection(element, htmlTextView);
     next.previous = element.sections;
     element.sections = next;
-    if (element.parentNode.componentType == HvDomContainer.ComponentType.TEXT) {
-      reopenText(((HvDomElement) element.parentNode), htmlTextView);
+    if (element.parentNode.componentType == Hv2DomContainer.ComponentType.TEXT) {
+      reopenText(((Hv2DomElement) element.parentNode), htmlTextView);
     }
   }
 

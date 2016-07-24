@@ -3,7 +3,7 @@ package org.kobjects.htmlview2;
 
 import android.view.View;
 
-import elemental.dom.Element;
+import org.kobjects.dom.Element;
 import org.kobjects.css.CssProperty;
 import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssUnit;
@@ -146,7 +146,7 @@ public class TableLayoutManager implements LayoutManager {
       int currentX = 0;
       for (View cell: row) {
         HtmlViewGroup.LayoutParams cellParams = (HtmlViewGroup.LayoutParams) cell.getLayoutParams();
-        HvDomElement cellElement = cellParams.element;
+        Hv2DomElement cellElement = cellParams.element;
         ColumnData columnData;
         while (true) {
           // Skip columns with remaining rowspan
@@ -212,14 +212,14 @@ public class TableLayoutManager implements LayoutManager {
 
     while (rowIterator.hasNext()) {
       CssStylableElement potentialRowElement = rowIterator.next();
-      if (potentialRowElement instanceof HvDomElement) {
-        HvDomElement row = (HvDomElement) potentialRowElement;
+      if (potentialRowElement instanceof Hv2DomElement) {
+        Hv2DomElement row = (Hv2DomElement) potentialRowElement;
         ArrayList<View> cells = new ArrayList<View>();
         rows.add(cells);
         Iterator<? extends CssStylableElement> colIterator = row.getChildElementIterator();
         while (colIterator.hasNext()) {
-          HvDomElement potentialCell = (HvDomElement) colIterator.next();
-          if (potentialCell.componentType == HvDomContainer.ComponentType.PHYSICAL_CONTAINER) {
+          Hv2DomElement potentialCell = (Hv2DomElement) colIterator.next();
+          if (potentialCell.componentType == Hv2DomContainer.ComponentType.PHYSICAL_CONTAINER) {
             cells.add(potentialCell.getView());
           }
         }

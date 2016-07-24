@@ -1,8 +1,8 @@
 package org.kobjects.htmlview2;
 
-import elemental.dom.Node;
+import org.kobjects.dom.Node;
 
-abstract class HvDomContainer extends HvDomNode {
+abstract class Hv2DomContainer extends Hv2DomNode {
   enum SyncState {
       SYNCED, CHILD_INVALID, INVALID
   }
@@ -16,24 +16,24 @@ abstract class HvDomContainer extends HvDomNode {
   }
   ComponentType componentType;
   SyncState syncState;
-  HvDomNode firstChild;
-  HvDomNode lastChild;
+  Hv2DomNode firstChild;
+  Hv2DomNode lastChild;
 
-  HvDomContainer(HvDomDocument ownerDocument, ComponentType componentType) {
+  Hv2DomContainer(Hv2DomDocument ownerDocument, ComponentType componentType) {
     super(ownerDocument);
     this.componentType = componentType;
   }
 
-  public HvDomNode getFirstChild() {
+  public Hv2DomNode getFirstChild() {
         return firstChild;
     }
 
-  public HvDomNode getLastChild() {
+  public Hv2DomNode getLastChild() {
         return lastChild;
     }
 
-  public HvDomNode insertBefore(Node newNode, Node referenceNode) {
-    HvDomNode newHvNode = (HvDomNode) newNode;
+  public Hv2DomNode insertBefore(Node newNode, Node referenceNode) {
+    Hv2DomNode newHvNode = (Hv2DomNode) newNode;
     if (referenceNode == null) {
       if (lastChild == null) {
         lastChild = firstChild = newHvNode;
@@ -45,7 +45,7 @@ abstract class HvDomContainer extends HvDomNode {
     } else if (referenceNode.getParentNode() != this) {
       throw new IllegalArgumentException("parent mismatch");
     } else {
-      HvDomNode ref = (HvDomNode) referenceNode;
+      Hv2DomNode ref = (Hv2DomNode) referenceNode;
       if (ref.previousSibling == null) {
         firstChild = newHvNode;
         newHvNode.nextSibling = ref;
@@ -59,7 +59,7 @@ abstract class HvDomContainer extends HvDomNode {
     }
     newHvNode.parentNode = this;
 
-    HvDomContainer parent = parentNode;
+    Hv2DomContainer parent = parentNode;
     syncState = SyncState.INVALID;
     while(parent != null && parent.syncState == SyncState.SYNCED) {
       parent.syncState = SyncState.CHILD_INVALID;
@@ -78,7 +78,7 @@ abstract class HvDomContainer extends HvDomNode {
     return sb.toString();
   }
 
-  public HvDomNode appendChild(Node node) {
+  public Hv2DomNode appendChild(Node node) {
         return insertBefore(node, null);
     }
 }

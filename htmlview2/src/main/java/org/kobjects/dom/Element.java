@@ -1,6 +1,4 @@
-package elemental.dom;
-
-import elemental.css.CSSStyleDeclaration;
+package org.kobjects.dom;
 
 public interface Element extends Node {
   String getLocalName();

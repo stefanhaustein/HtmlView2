@@ -1,4 +1,4 @@
-package elemental.dom;
+package org.kobjects.dom;
 
 public interface Document extends Node {
   Element createElement(String name);

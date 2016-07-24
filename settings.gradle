@@ -1,1 +1,1 @@
-include ':demo', ':htmlview2'
+include ':demo', ':htmlview2', ':boing'

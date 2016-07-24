@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
-import elemental.dom.Element;
-import elemental.html.Window;
+import org.kobjects.dom.Element;
+import org.kobjects.dom.Window;
 import org.kobjects.css.CssProperty;
 import org.kobjects.css.CssStyleDeclaration;
 import org.kobjects.css.CssStyleSheet;
@@ -41,7 +41,7 @@ public class HtmlView extends HtmlViewGroup implements Window {
   final CssStyleSheet styleSheet = CssStyleSheet.createDefault();
   float scale;
   public URI baseUri;
-  HvDomDocument document;
+  Hv2DomDocument document;
 
   public HtmlView(Context context) {
     super(context, null, null);
@@ -70,9 +70,9 @@ public class HtmlView extends HtmlViewGroup implements Window {
     return baseUri.resolve(uri);
   }
 
-  public HvDomDocument getDocument() {
+  public Hv2DomDocument getDocument() {
     if (document == null) {
-      document = new HvDomDocument(this);
+      document = new Hv2DomDocument(this);
     }
     return document;
   }

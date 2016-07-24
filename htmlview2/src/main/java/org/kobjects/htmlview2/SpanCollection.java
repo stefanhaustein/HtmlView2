@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 class SpanCollection implements ImageTarget {
-  HvDomElement element;
+  Hv2DomElement element;
   BitmapDrawable drawable;
   HtmlTextView htmlTextView;
   int start;
@@ -23,7 +23,7 @@ class SpanCollection implements ImageTarget {
   ArrayList<Object> spans = new ArrayList<>();
   SpanCollection previous;
 
-  SpanCollection(HvDomElement element, HtmlTextView htmlTextView) {
+  SpanCollection(Hv2DomElement element, HtmlTextView htmlTextView) {
     this.element = element;
     this.htmlTextView = htmlTextView;
     this.start = htmlTextView.content.length();
@@ -33,8 +33,8 @@ class SpanCollection implements ImageTarget {
     if (previous != null) {
       previous.updateStyle();
     }
-    CssStyleDeclaration parentStyle = element.parentNode.componentType == HvDomContainer.ComponentType.TEXT ?
-            ((HvDomElement) element.parentNode).computedStyle : htmlTextView.computedStyle;
+    CssStyleDeclaration parentStyle = element.parentNode.componentType == Hv2DomContainer.ComponentType.TEXT ?
+            ((Hv2DomElement) element.parentNode).computedStyle : htmlTextView.computedStyle;
     for (Object span : spans) {
       htmlTextView.content.removeSpan(span);
     }

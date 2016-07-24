@@ -3,8 +3,8 @@ package org.kobjects.htmlview2;
 import android.util.Log;
 
 
-import elemental.dom.Node;
-import elemental.dom.Text;
+import org.kobjects.dom.Node;
+import org.kobjects.dom.Text;
 import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssStyleSheet;
 import org.kobjects.kxml.HtmlParser;
@@ -16,7 +16,7 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
 
-import org.kobjects.htmlview2.HvDomContainer.ComponentType;
+import org.kobjects.htmlview2.Hv2DomContainer.ComponentType;
 
 /**
  * Uses a HtmlParser to generate a widget tree that corresponds to the HTML code.
@@ -27,7 +27,7 @@ public class HtmlProcessor {
   private static final String TAG = "HtmlProcessor";
   private HtmlParser parser;
   private HtmlView htmlView;
-  private HvDomDocument document;
+  private Hv2DomDocument document;
 
   private static final LinkedHashMap<String, ComponentType> ELEMENT_TYPES = new LinkedHashMap<>();
   static {
@@ -173,7 +173,7 @@ public class HtmlProcessor {
             htmlView.getStyleSheet().read(styleText, htmlView.getBaseUri(), null, null, null);
             parser.next();
           } else {
-            HvDomElement viewElement = htmlView.getDocument().createElement(parser.getName());
+            Hv2DomElement viewElement = htmlView.getDocument().createElement(parser.getName());
             for (int i = 0; i < parser.getAttributeCount(); i++) {
               viewElement.setAttribute(parser.getAttributeName(i), parser.getAttributeValue(i));
             }
@@ -185,12 +185,12 @@ public class HtmlProcessor {
           break;
         }
         case XmlPullParser.TEXT:
-          boolean textContainer = (container instanceof HvDomElement) &&
-                  ((HvDomElement) container).componentType == ComponentType.TEXT;
+          boolean textContainer = (container instanceof Hv2DomElement) &&
+                  ((Hv2DomElement) container).componentType == ComponentType.TEXT;
           boolean preceedingText = container.getLastChild() != null && (container.getLastChild() instanceof Text ||
-                  (container.getLastChild() instanceof HvDomElement && ((HvDomElement) container.getLastChild()).componentType ==
+                  (container.getLastChild() instanceof Hv2DomElement && ((Hv2DomElement) container.getLastChild()).componentType ==
                           ComponentType.TEXT));
-          boolean preceedingBr = container.getLastChild() instanceof HvDomElement && ((HvDomElement) container.getLastChild()).getLocalName().equals("br");
+          boolean preceedingBr = container.getLastChild() instanceof Hv2DomElement && ((Hv2DomElement) container.getLastChild()).getLocalName().equals("br");
 
           String text = normalizeText(parser.getText(), !preceedingBr && (textContainer || preceedingText));
           if (text.length() > 0) {

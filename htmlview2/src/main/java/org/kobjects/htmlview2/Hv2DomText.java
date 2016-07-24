@@ -1,11 +1,11 @@
 package org.kobjects.htmlview2;
 
-import elemental.dom.Text;
+import org.kobjects.dom.Text;
 
-class HvDomText extends HvDomNode implements Text {
+class Hv2DomText extends Hv2DomNode implements Text {
   String text;
 
-  HvDomText(HvDomDocument ownerDocument, String text) {
+  Hv2DomText(Hv2DomDocument ownerDocument, String text) {
     super(ownerDocument);
     this.text = text;
   }
@@ -16,12 +16,12 @@ class HvDomText extends HvDomNode implements Text {
     }
 
   @Override
-  public HvDomNode getFirstChild() {
+  public Hv2DomNode getFirstChild() {
         return null;
     }
 
   @Override
-  public HvDomNode getLastChild() {
+  public Hv2DomNode getLastChild() {
         return null;
     }
 

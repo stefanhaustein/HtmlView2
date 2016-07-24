@@ -1,4 +1,4 @@
-package elemental.css;
+package org.kobjects.dom;
 
 public interface CSSStyleDeclaration {
     String getPropertyValue(String name);

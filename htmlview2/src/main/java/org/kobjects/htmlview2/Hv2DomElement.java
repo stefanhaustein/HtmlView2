@@ -3,14 +3,14 @@ package org.kobjects.htmlview2;
 import android.content.Context;
 import android.view.View;
 import android.widget.*;
-import elemental.dom.Element;
+import org.kobjects.dom.Element;
 import org.kobjects.css.CssStylableElement;
 import org.kobjects.css.CssStyleDeclaration;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
-class HvDomElement extends HvDomContainer implements Element, CssStylableElement {
+class Hv2DomElement extends Hv2DomContainer implements Element, CssStylableElement {
 
   private final String name;
   LinkedHashMap<String,String> attributes = new LinkedHashMap<>();
@@ -23,11 +23,11 @@ class HvDomElement extends HvDomContainer implements Element, CssStylableElement
    */
   private View view;
 
-  public HvDomElement(HvDomDocument ownerDocument, String name) {
+  public Hv2DomElement(Hv2DomDocument ownerDocument, String name) {
     this(ownerDocument, name, null);
   }
 
-  public HvDomElement(HvDomDocument ownerDocument, String name, View view) {
+  public Hv2DomElement(Hv2DomDocument ownerDocument, String name, View view) {
     super(ownerDocument, HtmlProcessor.getElementType(name));
     this.name = name;
     if (view == null && componentType == ComponentType.PHYSICAL_CONTAINER) {
@@ -85,7 +85,7 @@ class HvDomElement extends HvDomContainer implements Element, CssStylableElement
   @Override
   public Iterator<? extends CssStylableElement> getChildElementIterator() {
     return new Iterator<CssStylableElement>() {
-      HvDomElement next = getFirstElementChild();
+      Hv2DomElement next = getFirstElementChild();
 
       @Override
       public boolean hasNext() {
@@ -94,7 +94,7 @@ class HvDomElement extends HvDomContainer implements Element, CssStylableElement
 
       @Override
       public CssStylableElement next() {
-        HvDomElement result = next;
+        Hv2DomElement result = next;
         next = next.getNextElementSibling();
         return result;
       }
@@ -102,39 +102,39 @@ class HvDomElement extends HvDomContainer implements Element, CssStylableElement
   }
 
   @Override
-  public HvDomElement getFirstElementChild() {
-    HvDomNode result = getFirstChild();
-    while (result != null && !(result instanceof HvDomElement)) {
+  public Hv2DomElement getFirstElementChild() {
+    Hv2DomNode result = getFirstChild();
+    while (result != null && !(result instanceof Hv2DomElement)) {
       result = result.getNextSibling();
     }
-    return (HvDomElement) result;
+    return (Hv2DomElement) result;
   }
 
   @Override
-  public HvDomElement getLastElementChild() {
-    HvDomNode result = getLastChild();
-    while (result != null && !(result instanceof HvDomElement)) {
+  public Hv2DomElement getLastElementChild() {
+    Hv2DomNode result = getLastChild();
+    while (result != null && !(result instanceof Hv2DomElement)) {
       result = result.getPreviousSibling();
     }
-    return (HvDomElement) result;
+    return (Hv2DomElement) result;
   }
 
   @Override
-  public HvDomElement getNextElementSibling() {
-    HvDomNode result = getNextSibling();
-    while (result != null && !(result instanceof HvDomElement)) {
+  public Hv2DomElement getNextElementSibling() {
+    Hv2DomNode result = getNextSibling();
+    while (result != null && !(result instanceof Hv2DomElement)) {
       result = result.getNextSibling();
     }
-    return (HvDomElement) result;
+    return (Hv2DomElement) result;
   }
 
   @Override
-  public HvDomElement getPreviousElementSibling() {
-    HvDomNode result = getPreviousSibling();
-    while (result != null && !(result instanceof HvDomElement)) {
+  public Hv2DomElement getPreviousElementSibling() {
+    Hv2DomNode result = getPreviousSibling();
+    while (result != null && !(result instanceof Hv2DomElement)) {
       result = result.getNextSibling();
     }
-    return (HvDomElement) result;
+    return (Hv2DomElement) result;
   }
 
   @Override

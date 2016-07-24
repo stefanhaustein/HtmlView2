@@ -366,7 +366,7 @@ public class CssStyleSheet {
           break;
         }
         case '*': {
-          // no need to do anything...
+          // no need to dom anything...
           ct.nextToken(true);
           continue;
         }
