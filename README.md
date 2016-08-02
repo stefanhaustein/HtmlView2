@@ -2,7 +2,7 @@
 
 Cleaner, simplified and "Androidified" version of HtmlView under development (should be ready for beta trials).
 
-- Text styling replaced with Android spans.
+- Custom text styling using Views in HtmlView1 replaced with Android spans.
 - Layouts are now orthogonal to the view hierarchy (opposed to subclassing in HtmlView).
 - Native views don't require wrapping.
 
