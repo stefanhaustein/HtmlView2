@@ -82,7 +82,7 @@ public class HtmlTextView extends TextView {
     float scale = htmlView.scale;
     setTextSize(TypedValue.COMPLEX_UNIT_PX, this.computedStyle.get(CssProperty.FONT_SIZE, CssUnit.PX) * scale);
     setTextColor(this.computedStyle.getColor(CssProperty.COLOR));
-    setTypeface(CssConversion.getTypeface(this.computedStyle), CssConversion.getTextStyle(this.computedStyle));
+    setTypeface(CssConversion.getTypeface(this.computedStyle)); // , CssConversion.getTextStyle(this.computedStyle));
     setPaintFlags((getPaintFlags() & HtmlView.PAINT_MASK) | CssConversion.getPaintFlags(this.computedStyle));
     switch (this.computedStyle.getEnum(CssProperty.TEXT_ALIGN)) {
       case RIGHT:

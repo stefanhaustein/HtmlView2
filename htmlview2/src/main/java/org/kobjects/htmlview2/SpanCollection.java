@@ -38,6 +38,7 @@ class SpanCollection implements ImageTarget {
     for (Object span : spans) {
       htmlTextView.content.removeSpan(span);
     }
+
     spans.clear();
     if (drawable != null) {
       Bitmap bitmap = drawable.getBitmap();
@@ -60,15 +61,15 @@ class SpanCollection implements ImageTarget {
 
       spans.add(new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE));
     }
-    int typefaceFlags = CssConversion.getTextStyle(element.style);
-    if (typefaceFlags != CssConversion.getTextStyle(parentStyle)) {
-      spans.add(new StyleSpan(typefaceFlags));
-    }
-    String typefaceName = CssConversion.getFontFamilyName(element.style);
+    String typefaceName = CssConversion.getFontFamilyName(element.computedStyle);
     if (!typefaceName.equals(CssConversion.getFontFamilyName(parentStyle))) {
       spans.add(new TypefaceSpan(typefaceName));
     }
-    int size = htmlTextView.htmlView.getTextSize(element.style);
+    int typefaceFlags = CssConversion.getTextStyle(element.computedStyle);
+    if (typefaceFlags != CssConversion.getTextStyle(parentStyle)) {
+      spans.add(new StyleSpan(typefaceFlags));
+    }
+    int size = htmlTextView.htmlView.getTextSize(element.computedStyle);
     if (size != htmlTextView.htmlView.getTextSize(parentStyle)) {
       spans.add(new AbsoluteSizeSpan(size));
     }

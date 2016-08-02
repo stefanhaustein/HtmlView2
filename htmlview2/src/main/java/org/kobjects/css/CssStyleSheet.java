@@ -98,7 +98,7 @@ public class CssStyleSheet {
         .setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
     s.put("address", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("b", new CssStyleDeclaration().set(CssProperty.FONT_WEIGHT, 700000, CssUnit.NUMBER));
+    s.put("b", new CssStyleDeclaration().set(CssProperty.FONT_WEIGHT, 700, CssUnit.NUMBER));
     CssStyleDeclaration tt = new CssStyleDeclaration();
     tt.fontFamily = "monospace";
     s.put("tt", tt);
