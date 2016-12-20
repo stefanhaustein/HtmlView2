@@ -34,6 +34,7 @@ public class CssStyleSheet {
   private static final char SELECT_ATTRIBUTE_INCLUDES = 9;
   private static final char SELECT_ATTRIBUTE_DASHMATCH = 10;
 
+  private static final float[] HEADING_SIZES = {2, 1.5f, 1.17f, 1.12f, .83f, .67f};
 
   /**
    * A table mapping element names to sub-style sheets for the corresponding
@@ -85,14 +86,19 @@ public class CssStyleSheet {
   /**
    * Creates a new style sheet with default rules for HTML.
    */
-  public static CssStyleSheet createDefault() {
+  public static CssStyleSheet createDefault(int defaultFontSizePx) {
     CssStyleSheet s = new CssStyleSheet();
     // Set default indent with to sufficient space for ordered lists with
     // two digits and the default paragraph spacing to 50% of the font height
     // (so top and bottom spacing adds up to a full line)
-    int defaultIndent = 40;
-    int defaultParagraphSpace = 12;
-    
+    int defaultFontSizePt = defaultFontSizePx * 3 / 4;
+    int defaultIndent = defaultFontSizePx * 4 / 2;
+    int defaultParagraphSpace = defaultFontSizePx / 2;
+
+    if (defaultFontSizePt != 12) {
+      s.put("*", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, defaultFontSizePt, CssUnit.PT));
+    }
+
     s.put(":link", new CssStyleDeclaration()
         .set(CssProperty.COLOR, 0x0ff0000ff, CssUnit.ARGB)
         .setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
@@ -102,7 +108,7 @@ public class CssStyleSheet {
     CssStyleDeclaration tt = new CssStyleDeclaration();
     tt.fontFamily = "monospace";
     s.put("tt", tt);
-    s.put("big", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, 16, CssUnit.PT));
+    s.put("big", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, defaultFontSizePt * 4 / 3, CssUnit.PT));
     s.put("blockquote", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
@@ -135,12 +141,13 @@ public class CssStyleSheet {
     s.put("dt", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
     s.put("form", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
     for (int i = 1; i <= 6; i++) {
+      // TODO: Change to em, see http://stackoverflow.com/questions/6140430/what-are-the-most-common-font-sizes-for-h1-h6-tags
       s.put("h" + i, new CssStyleDeclaration()
           .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
           .set(CssProperty.FONT_WEIGHT, 700, CssUnit.NUMBER)
           .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
           .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
-          .set(CssProperty.FONT_SIZE, 20 - 2 * i, CssUnit.PT));
+          .set(CssProperty.FONT_SIZE, Math.round(HEADING_SIZES[i - 1] * defaultFontSizePt), CssUnit.PT));
     }
     s.put("hr", new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
@@ -182,17 +189,17 @@ public class CssStyleSheet {
     pre.fontFamily = "monospace";
     s.put("pre", pre);
     s.put("script", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.NONE));
-    s.put("small", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, 9, CssUnit.PT));
+    s.put("small", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, defaultFontSizePt * 3 / 4, CssUnit.PT));
     s.put("strike", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH));
     s.put("strong", new CssStyleDeclaration()
         .set(CssProperty.FONT_WEIGHT, CssStyleDeclaration.FONT_WEIGHT_BOLD, CssUnit.NUMBER));
     s.put("style", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.NONE));
 
     s.put("sup", new CssStyleDeclaration()
-        .set(CssProperty.FONT_SIZE, 9, CssUnit.PT)
+        .set(CssProperty.FONT_SIZE, defaultFontSizePt * 3 / 4, CssUnit.PT)
         .setEnum(CssProperty.VERTICAL_ALIGN, CssEnum.SUPER));
     s.put("sub", new CssStyleDeclaration()
-        .set(CssProperty.FONT_SIZE, 9, CssUnit.PT)
+        .set(CssProperty.FONT_SIZE, defaultFontSizePt * 3 / 4, CssUnit.PT)
         .setEnum(CssProperty.VERTICAL_ALIGN, CssEnum.SUB));
 
     s.put("table", new CssStyleDeclaration()

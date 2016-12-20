@@ -217,7 +217,7 @@ public class CssStyleDeclaration implements CSSStyleDeclaration {
         value *= get(CssProperty.FONT_SIZE, CssUnit.PX);
         break;
       case EX:
-        value *= get(CssProperty.FONT_SIZE, CssUnit.PX) / 2f;
+        value *= get(CssProperty.FONT_SIZE, CssUnit.PX) / 2;
         break;
       case IN:
         value *= DPI;

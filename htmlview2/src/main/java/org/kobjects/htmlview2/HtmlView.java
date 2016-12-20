@@ -38,16 +38,17 @@ public class HtmlView extends HtmlViewGroup implements Window {
   static final String BASE64_MARKER = "base64,";
   static final String ASSET_BASE_URL = "file:///android_asset/";
 
-  final CssStyleSheet styleSheet = CssStyleSheet.createDefault();
+  private CssStyleSheet styleSheet;
   float scale;
-  public URI baseUri;
-  Hv2DomDocument document;
+  URI baseUri;
+  private Hv2DomDocument document = new Hv2DomDocument(this);
+  private WebSettings settings = new WebSettings();
 
   public HtmlView(Context context) {
     super(context, null, null);
     scale = context.getResources().getDisplayMetrics().density;
     htmlView = this;
-    node = getDocument();
+    node = document;
     try {
       baseUri = new URI(ASSET_BASE_URL);
     } catch (URISyntaxException e) {
@@ -66,19 +67,22 @@ public class HtmlView extends HtmlViewGroup implements Window {
     paint.setFlags((paint.getFlags() & PAINT_MASK) | CssConversion.getPaintFlags(style));
   }
 
+  protected CssStyleSheet createStylesheet() {
+    return CssStyleSheet.createDefault(settings.getDefaultFontSize());
+  }
+
   public URI createUri(String uri) throws URISyntaxException {
     return baseUri.resolve(uri);
   }
 
   public Hv2DomDocument getDocument() {
-    if (document == null) {
-      document = new Hv2DomDocument(this);
-    }
     return document;
   }
 
-
   public CssStyleSheet getStyleSheet() {
+    if (styleSheet == null) {
+      styleSheet = createStylesheet();
+    }
     return styleSheet;
   }
 
