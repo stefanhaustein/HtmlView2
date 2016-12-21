@@ -41,7 +41,7 @@ public class HtmlView extends HtmlViewGroup implements Window {
   private CssStyleSheet styleSheet;
   float scale;
   URI baseUri;
-  private Hv2DomDocument document = new Hv2DomDocument(this);
+  private Hv2DomDocument document;
   private WebSettings settings = new WebSettings();
 
   public HtmlView(Context context) {
@@ -54,12 +54,12 @@ public class HtmlView extends HtmlViewGroup implements Window {
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
+    clearAll();
   }
 
   int getTextSize(CssStyleDeclaration style) {
     return Math.round(scale * style.get(CssProperty.FONT_SIZE, CssUnit.PX));
   }
-
 
   void setPaint(CssStyleDeclaration style, Paint paint) {
     paint.setTextSize(getTextSize(style));
@@ -67,8 +67,10 @@ public class HtmlView extends HtmlViewGroup implements Window {
     paint.setFlags((paint.getFlags() & PAINT_MASK) | CssConversion.getPaintFlags(style));
   }
 
-  protected CssStyleSheet createStylesheet() {
-    return CssStyleSheet.createDefault(settings.getDefaultFontSize());
+  public void clearAll() {
+    node = document = new Hv2DomDocument(this);
+    styleSheet = null;
+    removeAllViews();
   }
 
   public URI createUri(String uri) throws URISyntaxException {
@@ -81,7 +83,7 @@ public class HtmlView extends HtmlViewGroup implements Window {
 
   public CssStyleSheet getStyleSheet() {
     if (styleSheet == null) {
-      styleSheet = createStylesheet();
+      styleSheet = CssStyleSheet.createDefault(settings.getDefaultFontSize());
     }
     return styleSheet;
   }

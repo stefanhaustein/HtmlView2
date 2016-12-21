@@ -623,12 +623,13 @@ public class CssStyleSheet {
   }
 
   /**
-   * Internal method used to simplify building the default style sheet.
+   * Helper for setting up a CssStyleSheet in code (used here for the default style sheet,
+   * but could also be used to change / extend it).
    * 
    * @param selector element name
    * @param style default style for the element
    */
-  private void put(String selector, CssStyleDeclaration style) {
+  public void put(String selector, CssStyleDeclaration style) {
     if (selectElementName == null) {
       selectElementName = new HashMap<String, CssStyleSheet>();
     }
