@@ -658,6 +658,14 @@ public class CssStyleSheet {
     }
   }
 
+  /**
+   * Returns the style declaration for the given selector.
+   */
+  public CssStyleDeclaration get(String selector) {
+    CssTokenizer ct = new CssTokenizer(null, selector + "{");
+    return parseSelector(ct);
+  }
+
   public String toString() {
     StringBuilder sb = new StringBuilder();
     toString("", sb);
