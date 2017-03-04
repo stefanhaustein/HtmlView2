@@ -33,8 +33,7 @@ captures/
 
 # Intellij
 *.iml
-/.idea/workspace.xml
-/.idea/libraries
+/.idea
 
 # Misc
 .DS_Store
