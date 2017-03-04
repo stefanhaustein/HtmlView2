@@ -8,7 +8,11 @@ Cleaner, simplified and "Androidified" version of HtmlView .
 
 ## Restrictions
 
-- No floats
+- No support for CSS floats
 - CSS can't override whether an element is a text or block element.
 
+## Usage
+
+For a simple example, please refer to the (demo)[
+https://github.com/stefanhaustein/HtmlView2/blob/master/demo/src/main/java/org/kobjects/htmlview2/demo/MainActivity.java]
 
