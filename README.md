@@ -13,6 +13,27 @@ Cleaner, simplified and "Androidified" version of HtmlView .
 
 ## Usage
 
-For a simple example, please refer to the (demo)[
-https://github.com/stefanhaustein/HtmlView2/blob/master/demo/src/main/java/org/kobjects/htmlview2/demo/MainActivity.java]
+For a simple example, please refer to the [demo](
+https://github.com/stefanhaustein/HtmlView2/blob/master/demo/src/main/java/org/kobjects/htmlview2/demo/MainActivity.java)
 
+## Gradle
+
+Jitpack for the win!
+
+Step 1: Add jitpack to your root build.gradle at the end of repositories:
+
+    allprojects {
+		    repositories {
+			  ...
+			  maven { url 'https://jitpack.io' }
+		    }
+	    }
+
+Step 2: Add the HtmlView2 dependency
+
+	dependencies {
+		compile 'com.github.stefanhaustein:htmlview:2.0.0'
+	}
+
+[![Release](https://jitpack.io/v/User/Repo.svg)]
+(https://jitpack.io/#stefanhaustein/htmlview2)
