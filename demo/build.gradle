@@ -5,17 +5,11 @@ android {
     buildToolsVersion "24.0.0"
 
     defaultConfig {
-        applicationId "org.kobjects.htmlview2"
+        applicationId "org.kobjects.htmlview2.demo"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
     }
 }
 
@@ -24,4 +18,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.0.0'
     compile project(':htmlview2')
+
+    // Uncomment to Test jitpack:
+    // compile 'com.github.stefanhaustein:HtmlView2:master-SNAPSHOT'
 }
