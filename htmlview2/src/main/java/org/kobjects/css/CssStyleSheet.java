@@ -96,135 +96,132 @@ public class CssStyleSheet {
     int defaultParagraphSpace = defaultFontSizePx / 2;
 
     if (defaultFontSizePt != 12) {
-      s.put("*", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, defaultFontSizePt, CssUnit.PT));
+      s.get("*").set(CssProperty.FONT_SIZE, defaultFontSizePt, CssUnit.PT);
     }
 
-    s.put(":link", new CssStyleDeclaration()
+    s.get(":link")
         .set(CssProperty.COLOR, 0x0ff0000ff, CssUnit.ARGB)
-        .setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
-    s.put("address", new CssStyleDeclaration()
-        .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("b", new CssStyleDeclaration().set(CssProperty.FONT_WEIGHT, 700, CssUnit.NUMBER));
-    CssStyleDeclaration tt = new CssStyleDeclaration();
-    tt.fontFamily = "monospace";
-    s.put("tt", tt);
-    s.put("big", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, defaultFontSizePt * 4 / 3, CssUnit.PT));
-    s.put("blockquote", new CssStyleDeclaration()
+        .setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE);
+    s.get("address")
+        .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK);
+    s.get("b").set(CssProperty.FONT_WEIGHT, 700, CssUnit.NUMBER);
+    s.get("tt").fontFamily = "monospace";
+    s.get("big").set(CssProperty.FONT_SIZE, defaultFontSizePt * 4 / 3, CssUnit.PT);
+    s.get("blockquote")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_RIGHT, defaultIndent, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
-        .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX));
-    s.put("body", new CssStyleDeclaration()
+        .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX);
+    s.get("body")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
-        .set(CssProperty.PADDING, defaultParagraphSpace / 2, CssUnit.PX, 0));
-    s.put("button", new CssStyleDeclaration().
+        .set(CssProperty.PADDING, defaultParagraphSpace / 2, CssUnit.PX, 0);
+    s.get("button").
         setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK).
-        set(CssProperty.PADDING, 30, CssUnit.PX));
-    s.put("center", new CssStyleDeclaration()
+        set(CssProperty.PADDING, 30, CssUnit.PX);
+    s.get("center")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
-        .setEnum(CssProperty.TEXT_ALIGN, CssEnum.CENTER));
-    s.put("dd", new CssStyleDeclaration()
+        .setEnum(CssProperty.TEXT_ALIGN, CssEnum.CENTER);
+    s.get("dd")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
-        .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX));
-    s.put("del", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH));
-    s.put("dir", new CssStyleDeclaration()
+        .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX);
+    s.get("del").setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH);
+    s.get("dir")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX)
-        .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE));
-    s.put("div", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("dl", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("dt", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("form", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
+        .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE);
+    s.get("div").setEnum(CssProperty.DISPLAY, CssEnum.BLOCK);
+    s.get("dl").setEnum(CssProperty.DISPLAY, CssEnum.BLOCK);
+    s.get("dt").setEnum(CssProperty.DISPLAY, CssEnum.BLOCK);
+    s.get("form").setEnum(CssProperty.DISPLAY, CssEnum.BLOCK);
     for (int i = 1; i <= 6; i++) {
       // TODO: Change to em, see http://stackoverflow.com/questions/6140430/what-are-the-most-common-font-sizes-for-h1-h6-tags
-      s.put("h" + i, new CssStyleDeclaration()
+      s.get("h" + i)
           .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
           .set(CssProperty.FONT_WEIGHT, 700, CssUnit.NUMBER)
           .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
           .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX)
-          .set(CssProperty.FONT_SIZE, Math.round(HEADING_SIZES[i - 1] * defaultFontSizePt), CssUnit.PT));
+          .set(CssProperty.FONT_SIZE, Math.round(HEADING_SIZES[i - 1] * defaultFontSizePt), CssUnit.PT);
     }
-    s.put("hr", new CssStyleDeclaration()
+    s.get("hr")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .setEnum(CssProperty.BORDER_TOP_STYLE, CssEnum.SOLID)
         .set(CssProperty.BORDER_TOP_COLOR, 0x0ff888888, CssUnit.ARGB)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
-        .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX));
+        .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX);
     CssStyleDeclaration italic = new CssStyleDeclaration().setEnum(CssProperty.FONT_STYLE, CssEnum.ITALIC);
-    s.put("i", italic);
-    s.put("em", italic);
-    s.put("img", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK));
-    s.put("input", new CssStyleDeclaration()
-        .setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK));
-    s.put("ins", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
-    s.put("li", new CssStyleDeclaration()
+    s.get("i").setEnum(CssProperty.FONT_STYLE, CssEnum.ITALIC);
+    s.get("em").setEnum(CssProperty.FONT_STYLE, CssEnum.ITALIC);
+    s.get("img").setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK);
+    s.get("input")
+        .setEnum(CssProperty.DISPLAY, CssEnum.INLINE_BLOCK);
+    s.get("ins").setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE);
+    s.get("li")
         .setEnum(CssProperty.DISPLAY, CssEnum.LIST_ITEM)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
-        .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX));
-    s.put("marquee", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.BLOCK));
-    s.put("menu", new CssStyleDeclaration()
+        .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX);
+    s.get("marquee").setEnum(CssProperty.DISPLAY, CssEnum.BLOCK);
+    s.get("menu")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK).
         set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX).
         set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX).
         set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX).
-        setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE));
-    s.put("ol", new CssStyleDeclaration()
+        setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE);
+    s.get("ol")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX)
-        .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.DECIMAL));
-    s.put("p", new CssStyleDeclaration()
+        .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.DECIMAL);
+    s.get("p")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
-        .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX));
+        .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX);
     CssStyleDeclaration pre = new CssStyleDeclaration()
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .setEnum(CssProperty.WHITE_SPACE, CssEnum.PRE)
         .set(CssProperty.MARGIN_TOP, defaultParagraphSpace, CssUnit.PX)
         .set(CssProperty.MARGIN_BOTTOM, defaultParagraphSpace, CssUnit.PX);
-    pre.fontFamily = "monospace";
-    s.put("pre", pre);
-    s.put("script", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.NONE));
-    s.put("small", new CssStyleDeclaration().set(CssProperty.FONT_SIZE, defaultFontSizePt * 3 / 4, CssUnit.PT));
-    s.put("strike", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH));
-    s.put("strong", new CssStyleDeclaration()
-        .set(CssProperty.FONT_WEIGHT, CssStyleDeclaration.FONT_WEIGHT_BOLD, CssUnit.NUMBER));
-    s.put("style", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.NONE));
+    s.get("pre").fontFamily = "monospace";
+    s.get("script").setEnum(CssProperty.DISPLAY, CssEnum.NONE);
+    s.get("small").set(CssProperty.FONT_SIZE, defaultFontSizePt * 3 / 4, CssUnit.PT);
+    s.get("strike").setEnum(CssProperty.TEXT_DECORATION, CssEnum.LINE_THROUGH);
+    s.get("strong")
+        .set(CssProperty.FONT_WEIGHT, CssStyleDeclaration.FONT_WEIGHT_BOLD, CssUnit.NUMBER);
+    s.get("style").setEnum(CssProperty.DISPLAY, CssEnum.NONE);
 
-    s.put("sup", new CssStyleDeclaration()
+    s.get("sup")
         .set(CssProperty.FONT_SIZE, defaultFontSizePt * 3 / 4, CssUnit.PT)
-        .setEnum(CssProperty.VERTICAL_ALIGN, CssEnum.SUPER));
-    s.put("sub", new CssStyleDeclaration()
+        .setEnum(CssProperty.VERTICAL_ALIGN, CssEnum.SUPER);
+    s.get("sub")
         .set(CssProperty.FONT_SIZE, defaultFontSizePt * 3 / 4, CssUnit.PT)
-        .setEnum(CssProperty.VERTICAL_ALIGN, CssEnum.SUB));
+        .setEnum(CssProperty.VERTICAL_ALIGN, CssEnum.SUB);
 
-    s.put("table", new CssStyleDeclaration()
+    s.get("table")
         .set(CssProperty.BORDER_SPACING, 2, CssUnit.PX)
         .setEnum(CssProperty.DISPLAY, CssEnum.TABLE)
-        .setEnum(CssProperty.CLEAR, CssEnum.BOTH));
-    s.put("td", new CssStyleDeclaration()
+        .setEnum(CssProperty.CLEAR, CssEnum.BOTH);
+    s.get("td")
         .setEnum(CssProperty.DISPLAY, CssEnum.TABLE_CELL)
         .set(CssProperty.PADDING, 10, CssUnit.PX)
         .setEnum(CssProperty.BORDER_STYLE, CssEnum.SOLID)
-        .setEnum(CssProperty.TEXT_ALIGN, CssEnum.LEFT));
-    s.put("th", new CssStyleDeclaration()
+        .setEnum(CssProperty.TEXT_ALIGN, CssEnum.LEFT);
+    s.get("th")
         .setEnum(CssProperty.DISPLAY, CssEnum.TABLE_CELL)
         .set(CssProperty.FONT_WEIGHT, 700, CssUnit.NUMBER)
         .set(CssProperty.PADDING, 10, CssUnit.PX)
         .setEnum(CssProperty.BORDER_STYLE, CssEnum.SOLID)
-        .setEnum(CssProperty.TEXT_ALIGN, CssEnum.CENTER));
-    s.put("tr", new CssStyleDeclaration().setEnum(CssProperty.DISPLAY, CssEnum.TABLE_ROW));
-    s.put("u", new CssStyleDeclaration().setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE));
-    s.put("ul", new CssStyleDeclaration()
+        .setEnum(CssProperty.TEXT_ALIGN, CssEnum.CENTER);
+    s.get("tr").setEnum(CssProperty.DISPLAY, CssEnum.TABLE_ROW);
+    s.get("u").setEnum(CssProperty.TEXT_DECORATION, CssEnum.UNDERLINE);
+    s.get("ul")
         .setEnum(CssProperty.DISPLAY, CssEnum.BLOCK)
         .set(CssProperty.MARGIN_LEFT, defaultIndent, CssUnit.PX)
-        .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE));
-    s.put("ul ul", new CssStyleDeclaration().setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.CIRCLE));
-    s.put("ul ul ul", new CssStyleDeclaration().setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.DISC));
+        .setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.SQUARE);
+    s.get("ul ul").setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.CIRCLE);
+    s.get("ul ul ul").setEnum(CssProperty.LIST_STYLE_TYPE, CssEnum.DISC);
     return s;
   }
 
@@ -623,39 +620,17 @@ public class CssStyleSheet {
   }
 
   /**
-   * Helper for setting up a CssStyleSheet in code (used here for the default style sheet,
-   * but could also be used to change / extend it).
-   * 
-   * @param selector element name
-   * @param style default style for the element
+   * Returns the style declaration for the given selector for programmatic modification.
+   * If the specificity is >= 0, Css.SPECIFICITY_IMPORTANT is subtracted to make sure system
+   * styles don't override user styles.
    */
-  public void put(String selector, CssStyleDeclaration style) {
-    if (selectElementName == null) {
-      selectElementName = new HashMap<String, CssStyleSheet>();
+  public CssStyleDeclaration get(String selector) {
+    CssTokenizer ct = new CssTokenizer(null, selector + "{");
+    CssStyleDeclaration result = parseSelector(ct);
+    if (result.specificity >= 0) {
+      result.specificity -= Css.SPECIFICITY_IMPORTANT;
     }
-    
-    boolean simple = true;
-    for (int i = 0; i < selector.length(); i++){
-      char c = selector.charAt(i);
-      if (c < 'a' || c > 'z') {
-        simple = false;
-        break;
-      }
-    }
-
-    if (simple) {
-      CssStyleSheet s = new CssStyleSheet();
-      s.properties = new ArrayList<CssStyleDeclaration>();
-      s.properties.add(style);
-      style.specificity = Css.SPECIFICITY_D - Css.SPECIFICITY_IMPORTANT;
-      selectElementName.put(selector, s);
-    } else {
-      CssTokenizer ct = new CssTokenizer(null, selector + "{");
-      CssStyleDeclaration target = parseSelector(ct);
-      target.setFrom(style);
-      // copy important
-      target.specificity += style.specificity - Css.SPECIFICITY_IMPORTANT;
-    }
+    return result;
   }
 
   public String toString() {
