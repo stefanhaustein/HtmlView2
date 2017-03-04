@@ -35,5 +35,5 @@ Step 2: Add the HtmlView2 dependency
 		compile 'com.github.stefanhaustein:htmlview:2.0.0'
 	}
 
-[![Release](https://jitpack.io/v/User/Repo.svg)]
-(https://jitpack.io/#stefanhaustein/htmlview2)
+[![Release](https://jitpack.io/v/User/Repo.svg?style=flat-square)]
+(https://jitpack.io/#stefanhaustein/HtmlView2)
