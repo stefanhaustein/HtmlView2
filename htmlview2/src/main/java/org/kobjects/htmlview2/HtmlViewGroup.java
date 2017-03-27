@@ -215,19 +215,19 @@ public class HtmlViewGroup extends ViewGroup {
             bullet = String.valueOf(listIndex) + ". ";
             break;
           case LOWER_LATIN:
-            bullet = toLetters(listIndex, 'a', 26);
+            bullet = toLetters(listIndex, 'a', 26) + ". ";
             break;
           case LOWER_GREEK:
-            bullet = toLetters(listIndex, '\u03b1', 25);
+            bullet = toLetters(listIndex, '\u03b1', 25) + ". ";
             break;
           case LOWER_ROMAN:
-            bullet = toRoman(listIndex);
+            bullet = toRoman(listIndex) + ". ";
             break;
           case UPPER_LATIN:
-            bullet = toLetters(listIndex, 'a', 26);
+            bullet = toLetters(listIndex, 'a', 26) + ". ";
             break;
           case UPPER_ROMAN:
-            bullet = toRoman(listIndex).toUpperCase();
+            bullet = toRoman(listIndex).toUpperCase() + ". ";
             break;
           case SQUARE:
             bullet = "\u25aa ";
