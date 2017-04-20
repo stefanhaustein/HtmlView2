@@ -33,8 +33,17 @@ class SpanCollection implements ImageTarget {
     if (previous != null) {
       previous.updateStyle();
     }
-    CssStyleDeclaration parentStyle = element.parentNode.componentType == Hv2DomContainer.ComponentType.TEXT ?
-            ((Hv2DomElement) element.parentNode).computedStyle : htmlTextView.computedStyle;
+    CssStyleDeclaration parentStyle;
+
+    if (element.parentNode.componentType == Hv2DomContainer.ComponentType.TEXT) {
+      parentStyle = ((Hv2DomElement) element.parentNode).computedStyle;
+    } else {
+      if (htmlTextView.computedStyle == null) {
+        htmlTextView.computedStyle = new CssStyleDeclaration();
+      }
+      parentStyle = htmlTextView.computedStyle;
+    }
+
     for (Object span : spans) {
       htmlTextView.content.removeSpan(span);
     }
