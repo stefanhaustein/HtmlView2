@@ -86,6 +86,10 @@ class SpanCollection implements ImageTarget {
     if (color != parentStyle.getColor(CssProperty.COLOR)) {
       spans.add(new ForegroundColorSpan(color));
     }
+    int backgroundColor = element.computedStyle.getColor(CssProperty.BACKGROUND_COLOR);
+    if (backgroundColor != parentStyle.getColor(CssProperty.BACKGROUND_COLOR)) {
+      spans.add(new BackgroundColorSpan(backgroundColor));
+    }
     CssEnum textDecoration = element.computedStyle.getEnum(CssProperty.TEXT_DECORATION);
     if (textDecoration != parentStyle.getEnum(CssProperty.TEXT_DECORATION)) {
       switch (textDecoration) {
