@@ -32,6 +32,6 @@ Step 1: Add jitpack to your root build.gradle at the end of repositories:
 Step 2: Add the HtmlView2 dependency
 
 	dependencies {
-		compile 'com.github.stefanhaustein:htmlview2:2.0.0'
+		compile 'com.github.stefanhaustein:htmlview2:v2.0.2'
 	}
 
