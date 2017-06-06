@@ -1,5 +1,7 @@
 # HtmlView2
 
+** Note: ** Please find a revised and more platform-independent and maintainable version of this library here: https://github.com/stefanhaustein/nativehtml
+
 Cleaner, simplified and "Androidified" version of HtmlView .
 
 - Custom text styling using Views in HtmlView1 replaced with Android spans.
